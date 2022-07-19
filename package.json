@@ -1,0 +1,32 @@
+{
+  "name": "outfund-segment",
+  "version": "1.0.0",
+  "description": "track events/calls for Outfund apps & websites",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "scripts": {
+    "tsc": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
+    "prepublish": "npm run tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/out-fund/tracking.git"
+  },
+  "keywords": [
+    "segment"
+  ],
+  "author": "Outfund",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/out-fund/tracking/issues"
+  },
+  "homepage": "https://github.com/out-fund/tracking#readme",
+  "devDependencies": {
+    "typescript": "^4.7.4",
+    "@types/jest": "^28.1.4",
+    "@types/node": "^18.0.3",
+    "jest": "^28.1.2",
+    "ts-jest": "^28.0.5",
+    "universal-cookie": "^4.0.4"
+  }
+}
