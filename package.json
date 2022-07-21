@@ -1,5 +1,5 @@
 {
-  "name": "@outfund/segmentio",
+  "name": "@shiggydoodah/segmentio",
   "version": "1.0.0",
   "description": "A simple library for track listeners & events for Segment.io",
   "main": "./lib/cjs/index.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/out-fund/tracking.git"
+    "url": "git+https://github.com/shiggydoodah/segment-events"
   },
   "keywords": [
     "segment"
@@ -18,9 +18,9 @@
   "author": "Outfund",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/out-fund/tracking/issues"
+    "url": "https://github.com/shiggydoodah/segment-events"
   },
-  "homepage": "https://github.com/out-fund/tracking#readme",
+  "homepage": "https://github.com/shiggydoodah/segment-events#readme",
   "devDependencies": {
     "typescript": "^4.7.4",
     "@types/jest": "^28.1.4",
