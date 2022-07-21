@@ -1,7 +1,7 @@
 {
-  "name": "outfund-segment",
+  "name": "@outfund/segmentio",
   "version": "1.0.0",
-  "description": "track events/calls for Outfund apps & websites",
+  "description": "A simple library for track listeners & events for Segment.io",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "scripts": {
