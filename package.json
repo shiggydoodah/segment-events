@@ -1,5 +1,5 @@
 {
-  "name": "@shiggydoodah/segmentio",
+  "name": "@shiggydoodah/segment-events",
   "version": "1.0.0",
   "description": "A simple library for track listeners & events for Segment.io",
   "main": "./lib/cjs/index.js",
