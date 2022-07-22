@@ -4,26 +4,25 @@ declare global {
     analytics?: any
   }
 }
-
-interface CommonProperties {
+export interface CommonProperties {
   name: string
-  url: string
+  url: string | undefined
   page: string
-  element_type: string
-  surface_type: string
-  surface_title: string
+  element_type: string | undefined
+  surface_type: string | undefined
+  surface_title: string | undefined
   platform: string
   country: string
 }
 
 interface IElementClicked extends CommonProperties {
-  href: string
+  href: string | undefined
 }
 
 interface ITrackInputs extends CommonProperties {
-  value: string
-  filed_name: string
-  option?: string
+  value: string | undefined
+  filed_name: string | undefined
+  option?: string | undefined
 }
 
 enum TrackEvents {
@@ -60,7 +59,7 @@ interface PageOptions {
   pageNames?: PageNames[]
 }
 
-function allPages(options: PageOptions) {
+function page(options: PageOptions) {
   const { regions, platform, pageNames = [] } = options
   if (typeof window === 'undefined') return
   if (window.analytics) {
@@ -82,7 +81,7 @@ function allPages(options: PageOptions) {
   }
 }
 
-function page(pagName: string, region: string, platform: string) {
+function pageView(pagName: string, region: string, platform: string) {
   if (typeof window === 'undefined' || !window.analytics) return
   const data = lib.getPageInfo()
   window.analytics.page({
@@ -222,9 +221,82 @@ function optionSelected(selector: string, regions: string[], platform: string) {
   }
 }
 
-function customEvent(eventName: string, data: any) {
-  if (typeof window === 'undefined' || !window.analytics) return
-  window.analytics.track(eventName, data)
+// CRA Functions
+
+interface TrackData extends Record<string, any> {
+  name: string
+  coutry: string
+  platform: string
+  element_type: string
 }
 
-export { page, clicks, textEntered, optionSelected, allPages, customEvent }
+function trackClick(e: HTMLElement, data: TrackData) {
+  if (typeof window === 'undefined' || !window.analytics) return
+  const pageData = lib.getPageInfo()
+  const attr = lib.getAttributes(e)
+
+  const elementAttributes = {
+    surface_type: attr.surfaceType || '',
+    surface_title: attr.surfaceTitle || '',
+  }
+  const eventData = {
+    ...data,
+    ...elementAttributes,
+    page: pageData.pageName,
+    url: pageData.url,
+  }
+
+  window.analytics.track(TrackEvents.ElementClicked, {
+    ...eventData,
+  })
+}
+
+function trackTextInput(e: HTMLInputElement, data: TrackData, identify?: string) {
+  const pageData = lib.getPageInfo()
+  const input = lib.getInputProperties(e)
+  const inputAttributes = {
+    surface_type: input.surface_type,
+    surface_title: input.surface_title,
+  }
+  const eventData = {
+    ...data,
+    ...inputAttributes,
+
+    page: pageData.pageName,
+    url: pageData.url,
+
+    filed_name: e.name || '',
+    value: e.value || '',
+  }
+
+  window.analytics.track(TrackEvents.TextEntered, {
+    ...eventData,
+  })
+  if (identify && e.value && e.value.length > 0) {
+    window.analytics.identify({
+      [identify]: e.value,
+    })
+  }
+}
+
+const customEvent = (eventName: string, data: TrackData) => {
+  if (typeof window === 'undefined' || !window.analytics) return
+  const pageData = lib.getPageInfo()
+
+  const eventData = {
+    ...data,
+    page: pageData.pageName,
+    url: pageData.url,
+  }
+
+  window.analytics.track(eventName, {
+    ...eventData,
+  })
+}
+
+// const trackUser = () => {
+//   if (typeof window === 'undefined' || !window.analytics) return
+//   console.log( window. )
+// }
+
+export { page, clicks, textEntered, optionSelected, pageView, trackClick, trackTextInput, customEvent }

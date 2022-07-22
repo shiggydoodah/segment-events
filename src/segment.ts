@@ -13,7 +13,24 @@ export default function (segmentKey: string, options: SegmentOptions) {
   const { methods = [], useDefault = true } = options
   const analytics = (window as Window).analytics || []
   const defaultMethods = useDefault
-    ? ['identify', 'reset', 'group', 'track', 'ready', 'alias', 'debug', 'page', 'once', 'off', 'on']
+    ? [
+        'trackSubmit',
+        'trackClick',
+        'trackLink',
+        'trackForm',
+        'pageview',
+        'identify',
+        'reset',
+        'group',
+        'track',
+        'ready',
+        'alias',
+        'debug',
+        'page',
+        'once',
+        'off',
+        'on',
+      ]
     : []
   window.analytics = analytics
   if (!analytics.initialize)
