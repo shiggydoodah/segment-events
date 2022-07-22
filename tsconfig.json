@@ -9,7 +9,7 @@
       "dom.iterable"
     ],
     "declaration": true,
-    "outDir": "lib/esm",
+    "outDir": "dist/esm",
     "strict": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,

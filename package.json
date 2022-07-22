@@ -2,8 +2,8 @@
   "name": "@shiggydoodah/segment-events",
   "version": "1.0.0",
   "description": "A simple library for track listeners & events for Segment.io",
-  "main": "./lib/cjs/index.js",
-  "module": "./lib/esm/index.js",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
   "scripts": {
     "tsc": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
     "prepublish": "npm run tsc"
