@@ -5,13 +5,13 @@ declare global {
   }
 }
 
-interface CommonProperties {
+export interface CommonProperties {
   name: string
-  url: string
+  url: string | undefined
   page: string
-  element_type: string
-  surface_type: string
-  surface_title: string
+  element_type: string | undefined
+  surface_type: string | undefined
+  surface_title: string | undefined
   platform: string
   country: string
 }
@@ -222,9 +222,4 @@ function optionSelected(selector: string, regions: string[], platform: string) {
   }
 }
 
-function customEvent(eventName: string, data: any) {
-  if (typeof window === 'undefined' || !window.analytics) return
-  window.analytics.track(eventName, data)
-}
-
-export { page, clicks, textEntered, optionSelected, allPages, customEvent }
+export { page, clicks, textEntered, optionSelected, allPages }
