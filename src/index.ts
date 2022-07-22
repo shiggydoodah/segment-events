@@ -4,14 +4,14 @@
 // TODO: Dispatch Custom Event listeners
 // TODO: CI/CD Testing
 
-import segment from './segment'
+import segment, { SegmentOptions } from './segment'
 import * as trackEvents from './track'
 
-const initSegment = (segmentKey: string) => {
+const initSegment = (segmentKey: string, options: SegmentOptions) => {
   if (typeof window === 'undefined') {
     return
   }
-  segment(segmentKey)
+  segment(segmentKey, options)
 }
 
 const track = trackEvents

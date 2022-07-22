@@ -26,14 +26,6 @@ interface ITrackInputs extends CommonProperties {
   option?: string
 }
 
-// type FormData = Record<string, any>
-// interface IFormProperties<T> extends CommonProperties {
-//   form_name: string
-//   form_action: string
-//   form_method: string
-//   data: T | FormData
-// }
-
 enum TrackEvents {
   ElementClicked = 'Element Clicked',
   ElementHovered = 'Element Hovered',
@@ -58,8 +50,18 @@ enum TrackEvents {
   LogoutFailed = 'Logout Failed',
 }
 
-// TODO: remove having to pass regions from this function.
-function page(regions: string[], platform: string) {
+type PageNames = {
+  name: string
+  path: string
+}
+interface PageOptions {
+  regions: string[]
+  platform: string
+  pageNames?: PageNames[]
+}
+
+function allPages(options: PageOptions) {
+  const { regions, platform, pageNames = [] } = options
   if (typeof window === 'undefined') return
   if (window.analytics) {
     const data = lib.getPageInfo()
@@ -77,6 +79,24 @@ function page(regions: string[], platform: string) {
         country: country,
       })
     }
+  }
+}
+
+function page(pagName: string, region: string, platform: string) {
+  if (typeof window === 'undefined' || !window.analytics) return
+  const data = lib.getPageInfo()
+  window.analytics.page({
+    name: pagName,
+    path: window.location.pathname,
+    country: region,
+    ...data.params,
+    platform,
+  })
+  if (data.params) {
+    window.analytics.identify({
+      ...data.params,
+      country: region,
+    })
   }
 }
 
@@ -202,34 +222,9 @@ function optionSelected(selector: string, regions: string[], platform: string) {
   }
 }
 
-// TODO: dispatch custom listeners for firing custom events.
-// interface dispatchCustomEvent {
-//   name: string
-//   detail: any
-// }
-// function dispatchListener(event: dispatchCustomEvent) {
-//   if (typeof window === "undefined" || !window.analytics) return
-//   window.addEventListener(event, (e: object) => {
-//     window.analytics.track(event, e)
-//   })
-// }
-
-// function dispatchEvent(event: string, data: object) {
-//   if (typeof window === "undefined" || !window.analytics) return
-//   window.dispatchEvent(new CustomEvent(event, data))
-// }
-
 function customEvent(eventName: string, data: any) {
   if (typeof window === 'undefined' || !window.analytics) return
   window.analytics.track(eventName, data)
 }
 
-export {
-  page,
-  clicks,
-  textEntered,
-  optionSelected,
-  // dispatchListener,
-  // dispatchEvent,
-  customEvent,
-}
+export { page, clicks, textEntered, optionSelected, allPages, customEvent }

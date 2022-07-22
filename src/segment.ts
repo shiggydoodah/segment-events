@@ -4,32 +4,23 @@ declare global {
   }
 }
 
-export default function (segmentKey: string) {
+export interface SegmentOptions {
+  methods?: string[]
+  useDefault?: boolean
+}
+
+export default function (segmentKey: string, options: SegmentOptions) {
+  const { methods = [], useDefault = true } = options
   const analytics = (window as Window).analytics || []
+  const defaultMethods = useDefault
+    ? ['identify', 'reset', 'group', 'track', 'ready', 'alias', 'debug', 'page', 'once', 'off', 'on']
+    : []
   window.analytics = analytics
   if (!analytics.initialize)
     if (analytics.invoked) window.console && console.error && console.error('Segment snippet included twice.')
     else {
       analytics.invoked = !0
-      analytics.methods = [
-        // "trackSubmit",
-        // "trackClick",
-        // "trackLink",
-        // "trackForm",
-        // "pageview",
-        'identify',
-        'reset',
-        'group',
-        'track',
-        'ready',
-        'alias',
-        'debug',
-        'page',
-        'once',
-        'off',
-        'on',
-        // 'addSourceMiddleware', <-- uncomment this line to enable semgment.com source middleware for the cookie managment tool. Then comment out the analytics.load line at the bottom.
-      ]
+      analytics.methods = [...defaultMethods, ...methods]
       analytics.factory = function (t: any) {
         return function (...args: any[]) {
           const e = Array.prototype.slice.call(args)
@@ -56,6 +47,6 @@ export default function (segmentKey: string) {
       }
       analytics._writeKey = segmentKey
       analytics.SNIPPET_VERSION = '4.15.3'
-      analytics.load(segmentKey) // comment out this line if you want to use the semgment.com source middleware for the cookie managment tool.
+      !methods.includes('addSourceMiddleware') && analytics.load(segmentKey)
     }
 }
