@@ -7,7 +7,6 @@ function setCookie(name, value) {
 function getCookie(cookie_name) {
     const hasCookie = document.cookie.match(new RegExp('(^| )' + cookie_name + '=([^;]+)'));
     if (hasCookie) {
-        console.log('has cookie');
         return JSON.parse(hasCookie[2]);
     }
     return false;
