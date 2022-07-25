@@ -4,10 +4,11 @@ declare type PageNames = {
     path: string;
 };
 declare function setCookie(name: string, value: AnalyticsParams): void;
+declare function getCookie(cookie_name: string): AnalyticsParams | false;
 declare function getParams(): Record<string, any>;
 declare function getParameterByName(name: string, url?: string): string | null;
 declare function utmSourceTracking(url?: string, utmParams?: AnalyticsParams): AnalyticsParams;
-declare function utmCookie(): any;
+declare function utmCookie(): AnalyticsParams;
 declare function getRegionFromPath(regions: string[], path: string): string;
 declare function getPageName(title: string, pageNames?: PageNames): string | undefined;
 declare function getPageInfo(): {
@@ -40,4 +41,4 @@ declare function getInputProperties(element: HTMLElement): {
     surface_type: string;
 };
 declare function getInputLableValue(element: HTMLInputElement): string | false;
-export { setCookie, getParameterByName, utmSourceTracking, utmCookie, getRegionFromPath, getPageName, getPageInfo, getParams, getDataAttribute, getAttributes, getSurfaceData, getElementProperties, getInputProperties, getInputLableValue, };
+export { setCookie, getCookie, getParameterByName, utmSourceTracking, utmCookie, getRegionFromPath, getPageName, getPageInfo, getParams, getDataAttribute, getAttributes, getSurfaceData, getElementProperties, getInputProperties, getInputLableValue, };

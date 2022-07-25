@@ -1,16 +1,22 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getInputLableValue = exports.getInputProperties = exports.getElementProperties = exports.getSurfaceData = exports.getAttributes = exports.getDataAttribute = exports.getParams = exports.getPageInfo = exports.getPageName = exports.getRegionFromPath = exports.utmCookie = exports.utmSourceTracking = exports.getParameterByName = exports.setCookie = void 0;
-const universal_cookie_1 = __importDefault(require("universal-cookie"));
+exports.getInputLableValue = exports.getInputProperties = exports.getElementProperties = exports.getSurfaceData = exports.getAttributes = exports.getDataAttribute = exports.getParams = exports.getPageInfo = exports.getPageName = exports.getRegionFromPath = exports.utmCookie = exports.utmSourceTracking = exports.getParameterByName = exports.getCookie = exports.setCookie = void 0;
 function setCookie(name, value) {
-    const cookie = new universal_cookie_1.default();
-    const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-    cookie.set(name, JSON.stringify(value), { path: '/', expires: expires });
+    let d = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    let expires = 'expires=' + d.toUTCString();
+    let cookie_value = JSON.stringify(value);
+    document.cookie = name + '=' + cookie_value + ';' + expires + ';path=/';
 }
 exports.setCookie = setCookie;
+function getCookie(cookie_name) {
+    const hasCookie = document.cookie.match(new RegExp('(^| )' + cookie_name + '=([^;]+)'));
+    if (hasCookie) {
+        console.log('has cookie');
+        return JSON.parse(hasCookie[2]);
+    }
+    return false;
+}
+exports.getCookie = getCookie;
 function getUTM() {
     const defaultUtms = {
         utm_source: null,
@@ -46,11 +52,11 @@ function getParameterByName(name, url) {
 }
 exports.getParameterByName = getParameterByName;
 function utmSourceTracking(url, utmParams) {
-    const cookie = new universal_cookie_1.default();
+    const cookie = getCookie('outfund_analytics');
     let defaultUtms = getUTM();
     let utms = utmParams ? utmParams : defaultUtms;
-    if (cookie.get('outfund_analytics')) {
-        utms = cookie.get('outfund_analytics');
+    if (cookie) {
+        utms = cookie;
     }
     for (let key in utms) {
         const value = getParameterByName(key, url);
@@ -63,10 +69,10 @@ function utmSourceTracking(url, utmParams) {
 }
 exports.utmSourceTracking = utmSourceTracking;
 function utmCookie() {
-    const cookie = new universal_cookie_1.default();
     let defaultUtms = getUTM();
-    if (cookie.get('outfund_analytics'))
-        return cookie.get('outfund_analytics');
+    const cookie = getCookie('outfund_analytics');
+    if (cookie)
+        return cookie;
     return defaultUtms;
 }
 exports.utmCookie = utmCookie;
