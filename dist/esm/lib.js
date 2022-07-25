@@ -1,8 +1,16 @@
-import Cookies from 'universal-cookie';
 function setCookie(name, value) {
-    const cookie = new Cookies();
-    const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-    cookie.set(name, JSON.stringify(value), { path: '/', expires: expires });
+    let d = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+    let expires = 'expires=' + d.toUTCString();
+    let cookie_value = JSON.stringify(value);
+    document.cookie = name + '=' + cookie_value + ';' + expires + ';path=/';
+}
+function getCookie(cookie_name) {
+    const hasCookie = document.cookie.match(new RegExp('(^| )' + cookie_name + '=([^;]+)'));
+    if (hasCookie) {
+        console.log('has cookie');
+        return JSON.parse(hasCookie[2]);
+    }
+    return false;
 }
 function getUTM() {
     const defaultUtms = {
@@ -37,11 +45,11 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 function utmSourceTracking(url, utmParams) {
-    const cookie = new Cookies();
+    const cookie = getCookie('outfund_analytics');
     let defaultUtms = getUTM();
     let utms = utmParams ? utmParams : defaultUtms;
-    if (cookie.get('outfund_analytics')) {
-        utms = cookie.get('outfund_analytics');
+    if (cookie) {
+        utms = cookie;
     }
     for (let key in utms) {
         const value = getParameterByName(key, url);
@@ -53,10 +61,10 @@ function utmSourceTracking(url, utmParams) {
     return utms;
 }
 function utmCookie() {
-    const cookie = new Cookies();
     let defaultUtms = getUTM();
-    if (cookie.get('outfund_analytics'))
-        return cookie.get('outfund_analytics');
+    const cookie = getCookie('outfund_analytics');
+    if (cookie)
+        return cookie;
     return defaultUtms;
 }
 function getRegionFromPath(regions, path) {
@@ -187,4 +195,4 @@ function getInputLableValue(element) {
     }
     return false;
 }
-export { setCookie, getParameterByName, utmSourceTracking, utmCookie, getRegionFromPath, getPageName, getPageInfo, getParams, getDataAttribute, getAttributes, getSurfaceData, getElementProperties, getInputProperties, getInputLableValue, };
+export { setCookie, getCookie, getParameterByName, utmSourceTracking, utmCookie, getRegionFromPath, getPageName, getPageInfo, getParams, getDataAttribute, getAttributes, getSurfaceData, getElementProperties, getInputProperties, getInputLableValue, };
