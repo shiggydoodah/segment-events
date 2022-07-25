@@ -266,7 +266,7 @@ function trackTextInput(e: HTMLInputElement, data: TrackData, identify?: string)
     url: pageData.url,
 
     filed_name: e.name || '',
-    value: e.value || '',
+    value: e.type === 'password' ? '*******' : e.value || '',
   }
 
   window.analytics.track(TrackEvents.TextEntered, {
@@ -279,7 +279,7 @@ function trackTextInput(e: HTMLInputElement, data: TrackData, identify?: string)
   }
 }
 
-const customEvent = (eventName: string, data: TrackData) => {
+function customEvent(eventName: string, data: TrackData) {
   if (typeof window === 'undefined' || !window.analytics) return
   const pageData = lib.getPageInfo()
 
@@ -288,15 +288,9 @@ const customEvent = (eventName: string, data: TrackData) => {
     page: pageData.pageName,
     url: pageData.url,
   }
-
   window.analytics.track(eventName, {
     ...eventData,
   })
 }
-
-// const trackUser = () => {
-//   if (typeof window === 'undefined' || !window.analytics) return
-//   console.log( window. )
-// }
 
 export { page, clicks, textEntered, optionSelected, pageView, trackClick, trackTextInput, customEvent }

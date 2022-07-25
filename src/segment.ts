@@ -30,6 +30,7 @@ export default function (segmentKey: string, options: SegmentOptions) {
         'once',
         'off',
         'on',
+        'user',
       ]
     : []
   window.analytics = analytics

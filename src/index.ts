@@ -10,19 +10,34 @@ const initSegment = (segmentKey: string, options: SegmentOptions) => {
 
 const track = trackEvents
 
-type TrackElementEvents =
-  | 'Element Clicked'
-  | 'Text Entered'
-  | 'Option Selected'
-  | 'Element Hovered'
-  | 'Modal Opened'
-  | 'Modal Closed'
-  | 'Video Played'
-  | 'Video Stopped'
+// type TrackElementEvents =
+//   | 'Element Clicked'
+//   | 'Text Entered'
+//   | 'Option Selected'
+//   | 'Element Hovered'
+//   | 'Modal Opened'
+//   | 'Modal Closed'
+//   | 'Video Played'
+//   | 'Video Stopped'
 
-const getUserTraits = () => {
+const getUser = () => {
   if (typeof window === 'undefined' || !window.analytics) return
-  return window.analytics.userTraits
+  window.analytics.ready(function () {
+    const user = window.analytics.user()
+    const traits = user.traits()
+    const userId = user.id()
+    const anonymousId = user.anonymousId()
+    return {
+      user,
+      traits,
+      userId,
+      anonymousId,
+    }
+  })
 }
 
-export { track, initSegment, getUserTraits }
+const trackClick = track.trackClick
+const trackInput = track.trackTextInput
+const trackEvent = track.customEvent
+
+export { track, initSegment, getUser, trackClick, trackInput, trackEvent }
