@@ -38,3 +38,5 @@ function getUser(): SegmentUser {
     anonymousId: () => '',
   }
 }
+
+export { identify, setUser, getUser }

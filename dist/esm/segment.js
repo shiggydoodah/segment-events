@@ -1,5 +1,5 @@
 export default function (segmentKey, options) {
-    const { methods = [], useDefault = true } = options;
+    const { methods = [], useDefault = true, cookieBanner = false } = options;
     const analytics = window.analytics || [];
     const defaultMethods = useDefault
         ? [
@@ -29,7 +29,6 @@ export default function (segmentKey, options) {
         else {
             analytics.invoked = !0;
             analytics.methods = [...defaultMethods, ...methods];
-            console.log([...defaultMethods, ...methods]);
             analytics.factory = function (t) {
                 return function (...args) {
                     const e = Array.prototype.slice.call(args);
@@ -55,6 +54,6 @@ export default function (segmentKey, options) {
             };
             analytics._writeKey = segmentKey;
             analytics.SNIPPET_VERSION = '4.15.3';
-            !methods.includes('addSourceMiddleware') && analytics.load(segmentKey);
+            !cookieBanner && analytics.load(segmentKey);
         }
 }

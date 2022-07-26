@@ -26,9 +26,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.trackEvent = exports.trackInput = exports.trackClick = exports.getUser = exports.initSegment = exports.track = void 0;
+exports.user = exports.trackEvent = exports.trackInput = exports.trackClick = exports.initSegment = exports.track = void 0;
 const segment_1 = __importDefault(require("./segment"));
-const trackEvents = __importStar(require("./track"));
+const track = __importStar(require("./track"));
+exports.track = track;
+const user = __importStar(require("./user"));
+exports.user = user;
 const initSegment = (segmentKey, options) => {
     if (typeof window === 'undefined') {
         return;
@@ -36,34 +39,6 @@ const initSegment = (segmentKey, options) => {
     (0, segment_1.default)(segmentKey, options);
 };
 exports.initSegment = initSegment;
-const track = trackEvents;
-exports.track = track;
-// type TrackElementEvents =
-//   | 'Element Clicked'
-//   | 'Text Entered'
-//   | 'Option Selected'
-//   | 'Element Hovered'
-//   | 'Modal Opened'
-//   | 'Modal Closed'
-//   | 'Video Played'
-//   | 'Video Stopped'
-const getUser = () => {
-    if (typeof window === 'undefined' || !window.analytics)
-        return;
-    window.analytics.ready(function () {
-        const user = window.analytics.user();
-        const traits = user.traits();
-        const userId = user.id();
-        const anonymousId = user.anonymousId();
-        return {
-            user,
-            traits,
-            userId,
-            anonymousId,
-        };
-    });
-};
-exports.getUser = getUser;
 const trackClick = track.trackClick;
 exports.trackClick = trackClick;
 const trackInput = track.trackTextInput;

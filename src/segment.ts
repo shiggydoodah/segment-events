@@ -7,10 +7,11 @@ declare global {
 export interface SegmentOptions {
   methods?: string[]
   useDefault?: boolean
+  cookieBanner?: boolean
 }
 
 export default function (segmentKey: string, options: SegmentOptions) {
-  const { methods = [], useDefault = true } = options
+  const { methods = [], useDefault = true, cookieBanner = false } = options
   const analytics = (window as Window).analytics || []
   const defaultMethods = useDefault
     ? [
@@ -65,6 +66,6 @@ export default function (segmentKey: string, options: SegmentOptions) {
       }
       analytics._writeKey = segmentKey
       analytics.SNIPPET_VERSION = '4.15.3'
-      !methods.includes('addSourceMiddleware') && analytics.load(segmentKey)
+      !cookieBanner && analytics.load(segmentKey)
     }
 }

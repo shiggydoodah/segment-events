@@ -7,3 +7,4 @@ interface SegmentUser {
     anonymousId: () => string;
 }
 declare function getUser(): SegmentUser;
+export { identify, setUser, getUser };

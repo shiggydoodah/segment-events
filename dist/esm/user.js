@@ -1,4 +1,3 @@
-"use strict";
 function identify(traits, id) {
     if (typeof window !== 'undefined' && (window === null || window === void 0 ? void 0 : window.analytics)) {
         window.analytics.ready(function () {
@@ -26,3 +25,4 @@ function getUser() {
         anonymousId: () => '',
     };
 }
+export { identify, setUser, getUser };

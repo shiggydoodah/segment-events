@@ -14,12 +14,11 @@ export interface CommonProperties {
   platform: string
   country: string
 }
-
-interface IElementClicked extends CommonProperties {
+export interface IElementClicked extends CommonProperties {
   href: string | undefined
 }
 
-interface ITrackInputs extends CommonProperties {
+export interface ITrackInputs extends CommonProperties {
   value: string | undefined
   filed_name: string | undefined
   option?: string | undefined
