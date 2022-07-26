@@ -29,7 +29,7 @@ declare function textEntered(selector: string, regions: string[], platform: stri
 declare function optionSelected(selector: string, regions: string[], platform: string): void;
 interface TrackData extends Record<string, any> {
     name: string;
-    coutry: string;
+    country: string;
     platform: string;
     element_type: string;
 }
