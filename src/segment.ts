@@ -39,6 +39,7 @@ export default function (segmentKey: string, options: SegmentOptions) {
     else {
       analytics.invoked = !0
       analytics.methods = [...defaultMethods, ...methods]
+      console.log([...defaultMethods, ...methods])
       analytics.factory = function (t: any) {
         return function (...args: any[]) {
           const e = Array.prototype.slice.call(args)
