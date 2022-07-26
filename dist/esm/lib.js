@@ -67,8 +67,8 @@ function utmCookie() {
     return defaultUtms;
 }
 function getRegionFromPath(regions, path) {
-    let region = 'uk'; // TODO: config default region
-    if (regions.length > 0) {
+    let region = 'uk';
+    if (regions && regions.length > 0) {
         for (let i = 0; i < regions.length; i++) {
             if (path.indexOf(`/${regions[i]}`) > -1) {
                 region = regions[i];
