@@ -113,7 +113,7 @@ function textEntered(selector, regions, platform) {
                 surface_type: input.surface_type,
                 surface_title: input.surface_title,
                 value: input.value,
-                filed_name: input.field_name,
+                field_name: input.field_name,
                 country: lib.getRegionFromPath(regions, pageData.path),
                 platform,
             };
@@ -162,7 +162,7 @@ function optionSelected(selector, regions, platform) {
             const data = {
                 name: optionName || input.name,
                 option,
-                filed_name: input.field_name,
+                field_name: input.field_name,
                 value: value,
                 page: pageData.pageName,
                 url: pageData.url,
@@ -202,7 +202,7 @@ function trackTextInput(e, data, identify) {
         surface_type: input.surface_type,
         surface_title: input.surface_title,
     };
-    const eventData = Object.assign(Object.assign(Object.assign({}, data), inputAttributes), { page: pageData.pageName, url: pageData.url, filed_name: e.name || '', value: e.type === 'password' ? '*******' : e.value || '' });
+    const eventData = Object.assign(Object.assign(Object.assign({}, data), inputAttributes), { page: pageData.pageName, url: pageData.url, field_name: e.name || '', value: e.type === 'password' ? '*******' : e.value || '' });
     window.analytics.track(TrackEvents.TextEntered, Object.assign({}, eventData));
     if (identify && e.value && e.value.length > 0) {
         window.analytics.identify({

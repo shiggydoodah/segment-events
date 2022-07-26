@@ -20,7 +20,7 @@ export interface IElementClicked extends CommonProperties {
 
 export interface ITrackInputs extends CommonProperties {
   value: string | undefined
-  filed_name: string | undefined
+  field_name: string | undefined
   option?: string | undefined
 }
 
@@ -142,7 +142,7 @@ function textEntered(selector: string, regions: string[], platform: string) {
         surface_type: input.surface_type,
         surface_title: input.surface_title,
         value: input.value,
-        filed_name: input.field_name,
+        field_name: input.field_name,
         country: lib.getRegionFromPath(regions, pageData.path),
         platform,
       }
@@ -198,7 +198,7 @@ function optionSelected(selector: string, regions: string[], platform: string) {
       const data: Partial<ITrackInputs> = {
         name: optionName || input.name,
         option,
-        filed_name: input.field_name,
+        field_name: input.field_name,
         value: value,
 
         page: pageData.pageName,
@@ -264,7 +264,7 @@ function trackTextInput(e: HTMLInputElement, data: TrackData, identify?: string)
     page: pageData.pageName,
     url: pageData.url,
 
-    filed_name: e.name || '',
+    field_name: e.name || '',
     value: e.type === 'password' ? '*******' : e.value || '',
   }
 

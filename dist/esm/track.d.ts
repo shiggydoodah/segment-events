@@ -13,6 +13,14 @@ export interface CommonProperties {
     platform: string;
     country: string;
 }
+export interface IElementClicked extends CommonProperties {
+    href: string | undefined;
+}
+export interface ITrackInputs extends CommonProperties {
+    value: string | undefined;
+    field_name: string | undefined;
+    option?: string | undefined;
+}
 declare type PageNames = {
     name: string;
     path: string;
