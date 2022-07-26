@@ -31,6 +31,7 @@ function default_1(segmentKey, options) {
         else {
             analytics.invoked = !0;
             analytics.methods = [...defaultMethods, ...methods];
+            console.log([...defaultMethods, ...methods]);
             analytics.factory = function (t) {
                 return function (...args) {
                     const e = Array.prototype.slice.call(args);
