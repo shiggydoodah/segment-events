@@ -19,14 +19,21 @@ var TrackEvents;
     TrackEvents["LogoutFailed"] = "Logout Failed";
 })(TrackEvents || (TrackEvents = {}));
 function page(options) {
-    var _a;
+    var _a, _b, _c;
     const { regions, platform, pageNames = [] } = options;
     if (typeof window === 'undefined')
         return;
     if (window.analytics) {
         const data = lib.getPageInfo();
         const country = lib.getRegionFromPath(regions, data.path);
-        (_a = window.analytics) === null || _a === void 0 ? void 0 : _a.page(Object.assign(Object.assign({ name: data.pageName, path: data.path, country: country }, data.params), { platform }));
+        let pageName = data.pageName || '';
+        let pageEvent = data.path || '';
+        if (pageNames.length > 0) {
+            const find = ((_a = pageNames.find((p) => p.path === data.path)) === null || _a === void 0 ? void 0 : _a.name) || '';
+            pageName = find || pageName;
+            pageEvent = ((_b = pageNames.find((p) => p.path === data.path)) === null || _b === void 0 ? void 0 : _b.path) || data.path;
+        }
+        (_c = window.analytics) === null || _c === void 0 ? void 0 : _c.page(pageEvent, Object.assign(Object.assign({ name: pageName, path: data.path, country: country }, data.params), { platform }));
         if (data.params) {
             window.analytics.identify(Object.assign(Object.assign({}, data.params), { country: country }));
         }

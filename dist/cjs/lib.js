@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getInputLableValue = exports.getInputProperties = exports.getElementProperties = exports.getSurfaceData = exports.getAttributes = exports.getDataAttribute = exports.getParams = exports.getPageInfo = exports.getPageName = exports.getRegionFromPath = exports.utmCookie = exports.utmSourceTracking = exports.getParameterByName = exports.getCookie = exports.setCookie = void 0;
+exports.parsePageNameFromPath = exports.getInputLableValue = exports.getInputProperties = exports.getElementProperties = exports.getSurfaceData = exports.getAttributes = exports.getDataAttribute = exports.getParams = exports.getPageInfo = exports.getPageName = exports.getRegionFromPath = exports.utmCookie = exports.utmSourceTracking = exports.getParameterByName = exports.getCookie = exports.setCookie = void 0;
 function setCookie(name, value) {
     let d = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
     let expires = 'expires=' + d.toUTCString();
@@ -214,3 +214,11 @@ function getInputLableValue(element) {
     return false;
 }
 exports.getInputLableValue = getInputLableValue;
+function parsePageNameFromPath(pages) {
+    if (typeof window === 'undefined')
+        return '';
+    const path = document.location.pathname;
+    const page = pages.find((page) => page.path === path);
+    return page ? page.name : '';
+}
+exports.parsePageNameFromPath = parsePageNameFromPath;

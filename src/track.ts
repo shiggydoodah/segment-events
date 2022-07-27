@@ -65,8 +65,15 @@ function page(options: PageOptions) {
   if (window.analytics) {
     const data = lib.getPageInfo()
     const country = lib.getRegionFromPath(regions, data.path)
-    window.analytics?.page({
-      name: data.pageName,
+    let pageName = data.pageName || ''
+    let pageEvent = data.path || ''
+    if (pageNames.length > 0) {
+      const find = pageNames.find((p) => p.path === data.path)?.name || ''
+      pageName = find || pageName
+      pageEvent = pageNames.find((p) => p.path === data.path)?.path || data.path
+    }
+    window.analytics?.page(pageEvent, {
+      name: pageName,
       path: data.path,
       country: country,
       ...data.params,

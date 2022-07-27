@@ -196,4 +196,11 @@ function getInputLableValue(element) {
     }
     return false;
 }
-export { setCookie, getCookie, getParameterByName, utmSourceTracking, utmCookie, getRegionFromPath, getPageName, getPageInfo, getParams, getDataAttribute, getAttributes, getSurfaceData, getElementProperties, getInputProperties, getInputLableValue, };
+function parsePageNameFromPath(pages) {
+    if (typeof window === 'undefined')
+        return '';
+    const path = document.location.pathname;
+    const page = pages.find((page) => page.path === path);
+    return page ? page.name : '';
+}
+export { setCookie, getCookie, getParameterByName, utmSourceTracking, utmCookie, getRegionFromPath, getPageName, getPageInfo, getParams, getDataAttribute, getAttributes, getSurfaceData, getElementProperties, getInputProperties, getInputLableValue, parsePageNameFromPath, };

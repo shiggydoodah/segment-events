@@ -212,6 +212,18 @@ function getInputLableValue(element: HTMLInputElement): string | false {
   return false
 }
 
+type PageOptions = {
+  path: string
+  name: string
+}
+
+function parsePageNameFromPath(pages: PageOptions[] | []) {
+  if (typeof window === 'undefined') return ''
+  const path = document.location.pathname
+  const page = pages.find((page) => page.path === path)
+  return page ? page.name : ''
+}
+
 export {
   setCookie,
   getCookie,
@@ -228,4 +240,5 @@ export {
   getElementProperties,
   getInputProperties,
   getInputLableValue,
+  parsePageNameFromPath,
 }

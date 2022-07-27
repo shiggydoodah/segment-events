@@ -42,4 +42,9 @@ declare function getInputProperties(element: HTMLElement): {
     surface_type: string;
 };
 declare function getInputLableValue(element: HTMLInputElement): string | false;
-export { setCookie, getCookie, getParameterByName, utmSourceTracking, utmCookie, getRegionFromPath, getPageName, getPageInfo, getParams, getDataAttribute, getAttributes, getSurfaceData, getElementProperties, getInputProperties, getInputLableValue, };
+declare type PageOptions = {
+    path: string;
+    name: string;
+};
+declare function parsePageNameFromPath(pages: PageOptions[] | []): string;
+export { setCookie, getCookie, getParameterByName, utmSourceTracking, utmCookie, getRegionFromPath, getPageName, getPageInfo, getParams, getDataAttribute, getAttributes, getSurfaceData, getElementProperties, getInputProperties, getInputLableValue, parsePageNameFromPath, };
