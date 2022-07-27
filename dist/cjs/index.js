@@ -26,12 +26,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.user = exports.trackEvent = exports.trackInput = exports.trackClick = exports.initSegment = exports.track = void 0;
+exports.utmCookie = exports.trackEvent = exports.trackInput = exports.trackClick = exports.initSegment = exports.user = exports.track = void 0;
 const segment_1 = __importDefault(require("./segment"));
 const track = __importStar(require("./track"));
 exports.track = track;
 const user = __importStar(require("./user"));
 exports.user = user;
+const lib_1 = require("./lib");
+Object.defineProperty(exports, "utmCookie", { enumerable: true, get: function () { return lib_1.utmCookie; } });
 const initSegment = (segmentKey, options) => {
     if (typeof window === 'undefined') {
         return;

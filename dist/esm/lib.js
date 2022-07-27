@@ -80,11 +80,10 @@ function utmSourceTracking(url, utmParams) {
     return utms;
 }
 function utmCookie() {
-    let defaultUtms = getUTM();
     const cookie = getCookie('outfund_analytics');
     if (cookie)
         return cookie;
-    return defaultUtms;
+    return false;
 }
 function getRegionFromPath(regions, path) {
     let region = 'uk';

@@ -88,11 +88,10 @@ function utmSourceTracking(url, utmParams) {
 }
 exports.utmSourceTracking = utmSourceTracking;
 function utmCookie() {
-    let defaultUtms = getUTM();
     const cookie = getCookie('outfund_analytics');
     if (cookie)
         return cookie;
-    return defaultUtms;
+    return false;
 }
 exports.utmCookie = utmCookie;
 function getRegionFromPath(regions, path) {
