@@ -46,25 +46,27 @@ function clicks(selector, regions, platform) {
         return;
     const elements = document.querySelectorAll(selector);
     const pageData = lib.getPageInfo();
-    for (let i = 0; i < elements.length; i++) {
-        elements[i].addEventListener('click', (e) => {
-            const el = e.target;
-            const attr = lib.getAttributes(el);
-            const elementProperties = lib.getElementProperties(el);
-            const name = attr.name ? attr.name : elementProperties.text;
-            const data = {
-                name,
-                page: pageData.pageName,
-                url: pageData.url,
-                element_type: attr.type,
-                surface_type: attr.surfaceType,
-                surface_title: attr.surfaceTitle,
-                href: elementProperties.href,
-                country: lib.getRegionFromPath(regions, pageData.path),
-                platform,
-            };
-            window.analytics.track(TrackEvents.ElementClicked, data);
-        });
+    if (elements && elements.length > 0) {
+        for (let i = 0; i < elements.length; i++) {
+            elements[i].addEventListener('click', (e) => {
+                const el = e.target;
+                const attr = lib.getAttributes(el);
+                const elementProperties = lib.getElementProperties(el);
+                const name = attr.name ? attr.name : elementProperties.text;
+                const data = {
+                    name,
+                    page: pageData.pageName,
+                    url: pageData.url,
+                    element_type: attr.type,
+                    surface_type: attr.surfaceType,
+                    surface_title: attr.surfaceTitle,
+                    href: elementProperties.href,
+                    country: lib.getRegionFromPath(regions, pageData.path),
+                    platform,
+                };
+                window.analytics.track(TrackEvents.ElementClicked, data);
+            });
+        }
     }
 }
 function textEntered(selector, regions, platform) {

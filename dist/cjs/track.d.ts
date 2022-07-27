@@ -12,6 +12,7 @@ export interface CommonProperties {
     surface_title: string | undefined;
     platform: string;
     country: string;
+    category?: string;
 }
 export interface IElementClicked extends CommonProperties {
     href: string | undefined;
