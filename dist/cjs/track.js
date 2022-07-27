@@ -91,6 +91,7 @@ function clicks(selector, regions, platform) {
                     href: elementProperties.href,
                     country: lib.getRegionFromPath(regions, pageData.path),
                     platform,
+                    category: attr.category,
                 };
                 window.analytics.track(TrackEvents.ElementClicked, data);
             });

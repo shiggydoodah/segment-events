@@ -110,6 +110,7 @@ var CustomAttributes;
     CustomAttributes["elementState"] = "element-state";
     CustomAttributes["surfaceTitle"] = "data-surface-title";
     CustomAttributes["surfaceType"] = "data-surface-type";
+    CustomAttributes["category"] = "data-element-category";
 })(CustomAttributes || (CustomAttributes = {}));
 function getSurfaceData(element, surface) {
     let surfaceData = element.getAttribute(`data-surface-${surface}`) || false;
@@ -153,6 +154,7 @@ function getAttributes(element) {
         surfaceType: attributes.hasOwnProperty(CustomAttributes.surfaceType)
             ? attributes[CustomAttributes.surfaceType]
             : getSurfaceData(element, 'type'),
+        category: attributes.hasOwnProperty(CustomAttributes.category) ? attributes[CustomAttributes.category] : '',
     };
 }
 function getElementProperties(element) {

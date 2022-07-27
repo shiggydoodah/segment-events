@@ -121,6 +121,7 @@ enum CustomAttributes {
   elementState = 'element-state',
   surfaceTitle = 'data-surface-title',
   surfaceType = 'data-surface-type',
+  category = 'data-element-category',
 }
 
 function getSurfaceData(element: HTMLElement, surface: 'type' | 'title') {
@@ -150,6 +151,7 @@ function getDataAttribute(attribute: string, element: HTMLElement) {
 
 function getAttributes(element: HTMLElement) {
   const attributes: Record<string, string> = {}
+
   for (let i = 0; i < element.attributes.length; i++) {
     const attr = element.attributes[i]
     attributes[attr.name] = attr.value
@@ -165,6 +167,7 @@ function getAttributes(element: HTMLElement) {
     surfaceType: attributes.hasOwnProperty(CustomAttributes.surfaceType)
       ? attributes[CustomAttributes.surfaceType]
       : getSurfaceData(element, 'type'),
+    category: attributes.hasOwnProperty(CustomAttributes.category) ? attributes[CustomAttributes.category] : '',
   }
 }
 

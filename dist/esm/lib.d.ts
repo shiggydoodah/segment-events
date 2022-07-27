@@ -25,6 +25,7 @@ declare function getAttributes(element: HTMLElement): {
     name: string;
     surfaceTitle: string;
     surfaceType: string;
+    category: string;
 };
 declare function getElementProperties(element: HTMLElement): {
     href: string;
