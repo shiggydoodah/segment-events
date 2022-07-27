@@ -27,7 +27,7 @@ declare type PageNames = {
     path: string;
 };
 interface PageOptions {
-    regions: string[];
+    regions: string[] | [];
     platform: string;
     pageNames?: PageNames[];
 }

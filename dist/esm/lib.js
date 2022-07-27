@@ -196,11 +196,20 @@ function getInputLableValue(element) {
     }
     return false;
 }
-function parsePageNameFromPath(pages) {
+function parsePageNameFromPath(pages, region) {
+    var _a;
     if (typeof window === 'undefined')
         return '';
-    const path = document.location.pathname;
-    const page = pages.find((page) => page.path === path);
-    return page ? page.name : '';
+    let path = document.location.pathname;
+    //if region exists in path, remove it
+    if (region && region.length > 0) {
+        for (let i = 0; i < region.length; i++) {
+            if (path.indexOf(`/${region[i]}`) > -1) {
+                path = path.replace(`/${region[i]}`, '');
+                break;
+            }
+        }
+    }
+    return ((_a = pages.find((page) => page.path === path)) === null || _a === void 0 ? void 0 : _a.name) || false;
 }
 export { setCookie, getCookie, getParameterByName, utmSourceTracking, utmCookie, getRegionFromPath, getPageName, getPageInfo, getParams, getDataAttribute, getAttributes, getSurfaceData, getElementProperties, getInputProperties, getInputLableValue, parsePageNameFromPath, };

@@ -217,11 +217,19 @@ type PageOptions = {
   name: string
 }
 
-function parsePageNameFromPath(pages: PageOptions[] | []) {
+function parsePageNameFromPath(pages: PageOptions[] | [], region: string[]): string | false {
   if (typeof window === 'undefined') return ''
-  const path = document.location.pathname
-  const page = pages.find((page) => page.path === path)
-  return page ? page.name : ''
+  let path = document.location.pathname
+  //if region exists in path, remove it
+  if (region && region.length > 0) {
+    for (let i = 0; i < region.length; i++) {
+      if (path.indexOf(`/${region[i]}`) > -1) {
+        path = path.replace(`/${region[i]}`, '')
+        break
+      }
+    }
+  }
+  return pages.find((page) => page.path === path)?.name || false
 }
 
 export {

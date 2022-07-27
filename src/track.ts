@@ -54,7 +54,7 @@ type PageNames = {
   path: string
 }
 interface PageOptions {
-  regions: string[]
+  regions: string[] | []
   platform: string
   pageNames?: PageNames[]
 }
@@ -62,18 +62,20 @@ interface PageOptions {
 function page(options: PageOptions) {
   const { regions, platform, pageNames = [] } = options
   if (typeof window === 'undefined') return
+  // TODO: page name via title, path or options.pageNames
   if (window.analytics) {
     const data = lib.getPageInfo()
     const country = lib.getRegionFromPath(regions, data.path)
-    let pageName = data.pageName || ''
-    let pageEvent = data.path || ''
-    if (pageNames.length > 0) {
-      const find = pageNames.find((p) => p.path === data.path)?.name || ''
-      pageName = find || pageName
-      pageEvent = pageNames.find((p) => p.path === data.path)?.path || data.path
+    let hasPageName: string | false = false
+
+    if (pageNames && pageNames.length > 0) {
+      {
+        hasPageName = lib.parsePageNameFromPath(pageNames, regions)
+      }
     }
-    window.analytics?.page(pageEvent, {
-      name: pageName,
+    const page = hasPageName ? hasPageName : data.path
+    window.analytics?.page(page, {
+      name: page,
       path: data.path,
       country: country,
       ...data.params,
