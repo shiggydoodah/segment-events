@@ -185,7 +185,7 @@ function customEvent(eventName, data) {
     if (typeof window === 'undefined' || !window.analytics)
         return;
     const pageData = lib.getPageInfo();
-    const eventData = Object.assign(Object.assign({}, data), { page: pageData.pageName, url: pageData.url });
+    const eventData = Object.assign(Object.assign(Object.assign({}, data), { page: pageData.pageName, url: pageData.url }), pageData.params);
     window.analytics.track(eventName, Object.assign({}, eventData));
 }
 export { page, clicks, textEntered, optionSelected, pageView, trackClick, trackTextInput, customEvent };

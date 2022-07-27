@@ -284,11 +284,11 @@ function trackTextInput(e: HTMLInputElement, data: TrackData, identify?: string)
 function customEvent(eventName: string, data: TrackData) {
   if (typeof window === 'undefined' || !window.analytics) return
   const pageData = lib.getPageInfo()
-
   const eventData = {
     ...data,
     page: pageData.pageName,
     url: pageData.url,
+    ...pageData.params,
   }
   window.analytics.track(eventName, {
     ...eventData,
