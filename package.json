@@ -1,6 +1,6 @@
 {
   "name": "@shiggydoodah/segment-events",
-  "version": "1.1.9",
+  "version": "1.1.10",
   "description": "A simple library for track listeners & events for Segment.io",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
