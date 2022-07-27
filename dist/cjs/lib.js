@@ -5,15 +5,25 @@ function setCookie(name, value) {
     let d = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
     let expires = 'expires=' + d.toUTCString();
     let cookie_value = JSON.stringify(value);
-    document.cookie = name + '=' + cookie_value + ';' + expires + ';path=/';
+    document.cookie = name + '=' + cookie_value + ';' + expires + ';path=/;SameSite=Lax"';
 }
 exports.setCookie = setCookie;
 function getCookie(cookie_name) {
-    const hasCookie = document.cookie.match(new RegExp('(^| )' + cookie_name + '=([^;]+)'));
-    if (hasCookie) {
-        return JSON.parse(hasCookie[2]);
+    if (typeof window === 'undefined')
+        return false;
+    try {
+        const hasCookie = document.cookie.match(new RegExp('(^| )' + cookie_name + '=([^;]+)'));
+        if (hasCookie && hasCookie.length > 2) {
+            return JSON.parse(hasCookie[2]);
+        }
+        else {
+            return false;
+        }
     }
-    return false;
+    catch (e) {
+        console.log(e);
+        return false;
+    }
 }
 exports.getCookie = getCookie;
 function getUTM() {
@@ -23,7 +33,17 @@ function getUTM() {
         utm_campaign: null,
         utm_content: null,
         utm_term: null,
+        utm_id: null,
         gclid: null,
+        utm_chnl_adgrp: null,
+        utm_chnl_adgrp_id: null,
+        utm_cta: null,
+        utm_chnl_cmp: null,
+        utm_outfund: null,
+        utm_outfund_id: null,
+        utm_outfund_source: null,
+        ad_group: null,
+        target_id: null,
     };
     return defaultUtms;
 }
@@ -52,12 +72,12 @@ function getParameterByName(name, url) {
 exports.getParameterByName = getParameterByName;
 function utmSourceTracking(url, utmParams) {
     const cookie = getCookie('outfund_analytics');
-    let defaultUtms = getUTM();
-    let utms = utmParams ? utmParams : defaultUtms;
-    if (cookie) {
+    const allowedUtms = getUTM();
+    let utms = {};
+    if (cookie && Object.keys(cookie) && Object.keys(cookie).length > 0) {
         utms = cookie;
     }
-    for (let key in utms) {
+    for (let key in allowedUtms) {
         const value = getParameterByName(key, url);
         if (value) {
             utms[key] = value;
