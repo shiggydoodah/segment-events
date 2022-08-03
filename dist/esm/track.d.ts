@@ -13,6 +13,10 @@ export interface CommonProperties {
     platform: string;
     country: string;
     category?: string;
+    eventLabel: string | undefined;
+    eventCategory: string | undefined;
+    eventAction: string | undefined;
+    label: string | undefined;
 }
 export interface IElementClicked extends CommonProperties {
     href: string | undefined;

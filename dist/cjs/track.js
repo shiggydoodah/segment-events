@@ -100,6 +100,10 @@ function clicks(selector, regions, platform) {
                     country: lib.getRegionFromPath(regions, pageData.path),
                     platform,
                     category: attr.category,
+                    eventLabel: name,
+                    label: name,
+                    eventCategory: attr.category || 'All',
+                    eventAction: 'event',
                 };
                 window.analytics.track(TrackEvents.ElementClicked, data);
             });

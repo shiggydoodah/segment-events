@@ -14,6 +14,10 @@ export interface CommonProperties {
   platform: string
   country: string
   category?: string
+  eventLabel: string | undefined
+  eventCategory: string | undefined
+  eventAction: string | undefined
+  label: string | undefined
 }
 export interface IElementClicked extends CommonProperties {
   href: string | undefined
@@ -130,6 +134,10 @@ function clicks(selector: string, regions: string[], platform: string) {
           country: lib.getRegionFromPath(regions, pageData.path),
           platform,
           category: attr.category,
+          eventLabel: name,
+          label: name,
+          eventCategory: attr.category || 'All',
+          eventAction: 'event',
         }
         window.analytics.track(TrackEvents.ElementClicked, data)
       })

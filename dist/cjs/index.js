@@ -39,6 +39,15 @@ const initSegment = (segmentKey, options) => {
         return;
     }
     (0, segment_1.default)(segmentKey, options);
+    //   window.analytics.on('track', function(event, properties, options){
+    //    // custom logic based on event properties
+    //   ga('secondTracker.send', {
+    //     hitType: 'event',
+    //     eventCategory: properties.category || 'All',
+    //     eventAction: event,
+    //     eventLabel: properties.label || 'All'
+    //   })
+    // }
 };
 exports.initSegment = initSegment;
 const trackClick = track.trackClick;

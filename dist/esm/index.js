@@ -7,6 +7,15 @@ const initSegment = (segmentKey, options) => {
         return;
     }
     segment(segmentKey, options);
+    //   window.analytics.on('track', function(event, properties, options){
+    //    // custom logic based on event properties
+    //   ga('secondTracker.send', {
+    //     hitType: 'event',
+    //     eventCategory: properties.category || 'All',
+    //     eventAction: event,
+    //     eventLabel: properties.label || 'All'
+    //   })
+    // }
 };
 const trackClick = track.trackClick;
 const trackInput = track.trackTextInput;
