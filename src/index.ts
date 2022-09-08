@@ -1,7 +1,7 @@
 import segment, { SegmentOptions } from './segment'
 import * as track from './track'
 import * as user from './user'
-import { utmCookie } from './lib'
+import { utmCookie, utmsFromCookie, utmSourceTracking } from './lib'
 const initSegment = (segmentKey: string, options: SegmentOptions) => {
   if (typeof window === 'undefined') {
     return
@@ -22,5 +22,6 @@ const initSegment = (segmentKey: string, options: SegmentOptions) => {
 const trackClick = track.trackClick
 const trackInput = track.trackTextInput
 const trackEvent = track.customEvent
+const getUtms = utmsFromCookie
 
-export { track, user, initSegment, trackClick, trackInput, trackEvent, utmCookie }
+export { track, user, initSegment, trackClick, trackInput, trackEvent, utmCookie, getUtms, utmSourceTracking }

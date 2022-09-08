@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.utmCookie = exports.trackEvent = exports.trackInput = exports.trackClick = exports.initSegment = exports.user = exports.track = void 0;
+exports.utmSourceTracking = exports.getUtms = exports.utmCookie = exports.trackEvent = exports.trackInput = exports.trackClick = exports.initSegment = exports.user = exports.track = void 0;
 const segment_1 = __importDefault(require("./segment"));
 const track = __importStar(require("./track"));
 exports.track = track;
@@ -34,20 +34,21 @@ const user = __importStar(require("./user"));
 exports.user = user;
 const lib_1 = require("./lib");
 Object.defineProperty(exports, "utmCookie", { enumerable: true, get: function () { return lib_1.utmCookie; } });
+Object.defineProperty(exports, "utmSourceTracking", { enumerable: true, get: function () { return lib_1.utmSourceTracking; } });
 const initSegment = (segmentKey, options) => {
     if (typeof window === 'undefined') {
         return;
     }
     (0, segment_1.default)(segmentKey, options);
-    //   window.analytics.on('track', function(event, properties, options){
-    //    // custom logic based on event properties
-    //   ga('secondTracker.send', {
-    //     hitType: 'event',
-    //     eventCategory: properties.category || 'All',
-    //     eventAction: event,
-    //     eventLabel: properties.label || 'All'
-    //   })
-    // }
+    // window.analytics.on('track', function (event: string, properties: Record<string, any>) {
+    // custom logic based on event properties
+    // ga('secondTracker.send', {
+    //   hitType: 'event',
+    //   eventCategory: properties.category || 'All',
+    //   eventAction: event,
+    //   eventLabel: properties.label || 'All'
+    // })
+    // })
 };
 exports.initSegment = initSegment;
 const trackClick = track.trackClick;
@@ -56,3 +57,5 @@ const trackInput = track.trackTextInput;
 exports.trackInput = trackInput;
 const trackEvent = track.customEvent;
 exports.trackEvent = trackEvent;
+const getUtms = lib_1.utmsFromCookie;
+exports.getUtms = getUtms;

@@ -30,14 +30,14 @@ function getUTM() {
         utm_term: null,
         utm_id: null,
         gclid: null,
-        utm_chnl_adgrp: null,
-        utm_chnl_adgrp_id: null,
+        // utm_chnl_adgrp: null,
+        // utm_chnl_adgrp_id: null,
         utm_cta: null,
-        utm_chnl_cmp: null,
-        utm_outfund: null,
-        utm_outfund_id: null,
-        utm_outfund_source: null,
-        ad_group: null,
+        // utm_chnl_cmp: null,
+        // utm_outfund: null,
+        // utm_outfund_id: null,
+        // utm_outfund_source: null,
+        // ad_group: null,
         target_id: null,
     };
     return defaultUtms;
@@ -63,22 +63,69 @@ function getParameterByName(name, url) {
         return '';
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
-function utmSourceTracking(url, utmParams) {
-    const cookie = getCookie('outfund_analytics');
-    const allowedUtms = getUTM();
+// function utmSourceTracking(url?: string, utmParams?: AnalyticsParams) {
+//   const cookie = getCookie('outfund_analytics')
+//   const allowedUtms = getUTM()
+//   let utms = {} as AnalyticsParams
+//   if (cookie && Object.keys(cookie) && Object.keys(cookie).length > 0) {
+//     utms = cookie
+//   }
+//   for (let key in allowedUtms) {
+//     const value = getParameterByName(key, url)
+//     if (value) {
+//       utms[key! as keyof AnalyticsParams] = value
+//       setCookie('outfund_analytics', utms)
+//     }
+//   }
+//   return utms
+// }
+function utmSourceTracking() {
+    if (typeof window === 'undefined')
+        return;
+    const defaultUtms = getUTM();
+    const searchParams = Object.keys(window.location.search);
+    const cookie = getCookie('outfund_utm');
     let utms = {};
-    if (cookie && Object.keys(cookie) && Object.keys(cookie).length > 0) {
+    if (!cookie) {
+        setCookie('outfund_utm', defaultUtms);
+        utms = defaultUtms;
+    }
+    else {
         utms = cookie;
     }
-    for (let key in allowedUtms) {
-        const value = getParameterByName(key, url);
-        if (value) {
-            utms[key] = value;
-            setCookie('outfund_analytics', utms);
+    if (searchParams.length > 0) {
+        for (let key in defaultUtms) {
+            const value = getParameterByName(key);
+            if (value) {
+                utms[key] = value;
+            }
         }
+        setCookie('outfund_utm', utms);
     }
     return utms;
 }
+function utmsFromCookie() {
+    const defaultUtms = getUTM();
+    const cookie = getCookie('outfund_utm');
+    if (cookie)
+        return cookie;
+    return defaultUtms;
+}
+// function setUTMCookie() {
+//   if (typeof window === 'undefined') return
+//   if (!getCookie('outfund_analytics')) {
+//     const utms = {
+//       utm_source: getParameterByName('utm_source') || '',
+//       utm_medium: getParameterByName('utm_medium') || '',
+//       utm_campaign: getParameterByName('utm_campaign') || '',
+//       utm_content: getParameterByName('utm_content') || '',
+//       utm_term: getParameterByName('utm_term') || '',
+//       utm_id: getParameterByName('utm_id') || '',
+//       gclid: getParameterByName('gclid') || '',
+//     }
+//     setCookie('most_recent_utms', utms)
+//   }
+// }
 function utmCookie() {
     const cookie = getCookie('outfund_analytics');
     if (cookie)
@@ -111,9 +158,9 @@ function getPageName(title, pageNames) {
 function getPageInfo() {
     const path = document.location.pathname;
     const url = document.location.href;
-    const utms = utmSourceTracking(url);
+    const utms = utmSourceTracking();
     const pageName = getPageName(document.title);
-    const params = getParams();
+    const params = utms;
     return {
         path,
         url,
@@ -231,4 +278,6 @@ function parsePageNameFromPath(pages, region) {
     }
     return ((_a = pages.find((page) => page.path === path)) === null || _a === void 0 ? void 0 : _a.name) || false;
 }
-export { setCookie, getCookie, getParameterByName, utmSourceTracking, utmCookie, getRegionFromPath, getPageName, getPageInfo, getParams, getDataAttribute, getAttributes, getSurfaceData, getElementProperties, getInputProperties, getInputLableValue, parsePageNameFromPath, };
+export { setCookie, getCookie, getParameterByName, utmSourceTracking, utmCookie, getRegionFromPath, getPageName, getPageInfo, getParams, getDataAttribute, getAttributes, getSurfaceData, getElementProperties, getInputProperties, getInputLableValue, parsePageNameFromPath, 
+// utmParamTracking,
+utmsFromCookie, };

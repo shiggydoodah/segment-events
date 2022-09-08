@@ -66,31 +66,29 @@ interface PageOptions {
 function page(options: PageOptions) {
   const { regions, platform, pageNames = [] } = options
   if (typeof window === 'undefined') return
-  // TODO: page name via title, path or options.pageNames
-  if (window.analytics) {
-    const data = lib.getPageInfo()
-    const country = lib.getRegionFromPath(regions, data.path)
-    let hasPageName: string | false = false
+  if (!window.analytics) return
+  const data = lib.getPageInfo()
+  const country = lib.getRegionFromPath(regions, data.path)
+  let hasPageName: string | false = false
 
-    if (pageNames && pageNames.length > 0) {
-      {
-        hasPageName = lib.parsePageNameFromPath(pageNames, regions)
-      }
+  if (pageNames && pageNames.length > 0) {
+    {
+      hasPageName = lib.parsePageNameFromPath(pageNames, regions)
     }
-    const page = hasPageName ? hasPageName : data.path
-    window.analytics?.page(page, {
-      name: page,
-      path: data.path,
+  }
+  const page = hasPageName ? hasPageName : data.path
+  window.analytics?.page(page, {
+    name: page,
+    path: data.path,
+    country: country,
+    ...data.utms,
+    platform,
+  })
+  if (data.params) {
+    window.analytics.identify({
+      ...data.utms,
       country: country,
-      ...data.params,
-      platform,
     })
-    if (data.params) {
-      window.analytics.identify({
-        ...data.params,
-        country: country,
-      })
-    }
   }
 }
 
@@ -138,6 +136,7 @@ function clicks(selector: string, regions: string[], platform: string) {
           label: name,
           eventCategory: attr.category || 'All',
           eventAction: 'event',
+          ...pageData.params,
         }
         window.analytics.track(TrackEvents.ElementClicked, data)
       })
@@ -165,6 +164,7 @@ function textEntered(selector: string, regions: string[], platform: string) {
         field_name: input.field_name,
         country: lib.getRegionFromPath(regions, pageData.path),
         platform,
+        ...pageData.params,
       }
       window.analytics.track(TrackEvents.TextEntered, data)
       if (input.trait && input.value && input.value.length > 0) {
@@ -220,7 +220,6 @@ function optionSelected(selector: string, regions: string[], platform: string) {
         option,
         field_name: input.field_name,
         value: value,
-
         page: pageData.pageName,
         url: pageData.url,
         element_type: input.type,
@@ -228,6 +227,7 @@ function optionSelected(selector: string, regions: string[], platform: string) {
         surface_title: input.surface_title,
         country: lib.getRegionFromPath(regions, pageData.path),
         platform,
+        ...pageData.params,
       }
       window.analytics.track(TrackEvents.OptionSelected, data)
 
@@ -263,6 +263,7 @@ function trackClick(e: HTMLElement, data: TrackData) {
     ...elementAttributes,
     page: pageData.pageName,
     url: pageData.url,
+    ...pageData.params,
   }
 
   window.analytics.track(TrackEvents.ElementClicked, {
@@ -280,10 +281,9 @@ function trackTextInput(e: HTMLInputElement, data: TrackData, identify?: string)
   const eventData = {
     ...data,
     ...inputAttributes,
-
+    ...pageData.params,
     page: pageData.pageName,
     url: pageData.url,
-
     field_name: e.name || '',
     value: e.type === 'password' ? '*******' : e.value || '',
   }
