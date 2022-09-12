@@ -11,7 +11,8 @@ export interface CommonProperties {
     surface_type: string | undefined;
     surface_title: string | undefined;
     platform: string;
-    country: string;
+    country?: string;
+    locale?: string;
     category?: string;
     eventLabel: string | undefined;
     eventCategory: string | undefined;
@@ -42,7 +43,7 @@ declare function textEntered(selector: string, regions: string[], platform: stri
 declare function optionSelected(selector: string, regions: string[], platform: string): void;
 interface TrackData extends Record<string, any> {
     name: string;
-    country: string;
+    locale: string;
     platform: string;
     element_type: string;
 }

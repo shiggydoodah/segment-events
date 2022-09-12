@@ -12,7 +12,8 @@ export interface CommonProperties {
   surface_type: string | undefined
   surface_title: string | undefined
   platform: string
-  country: string
+  country?: string
+  locale?: string
   category?: string
   eventLabel: string | undefined
   eventCategory: string | undefined
@@ -68,7 +69,7 @@ function page(options: PageOptions) {
   if (typeof window === 'undefined') return
   if (!window.analytics) return
   const data = lib.getPageInfo()
-  const country = lib.getRegionFromPath(regions, data.path)
+  const locale = lib.getRegionFromPath(regions, data.path)
   let hasPageName: string | false = false
 
   if (pageNames && pageNames.length > 0) {
@@ -80,14 +81,14 @@ function page(options: PageOptions) {
   window.analytics?.page(page, {
     name: page,
     path: data.path,
-    country: country,
+    locale: locale,
     ...data.utms,
     platform,
   })
   if (data.params) {
     window.analytics.identify({
       ...data.utms,
-      country: country,
+      locale: locale,
     })
   }
 }
@@ -98,14 +99,14 @@ function pageView(pagName: string, region: string, platform: string) {
   window.analytics.page({
     name: pagName,
     path: window.location.pathname,
-    country: region,
+    locale: region,
     ...data.params,
     platform,
   })
   if (data.params) {
     window.analytics.identify({
       ...data.params,
-      country: region,
+      locale: region,
     })
   }
 }
@@ -129,7 +130,7 @@ function clicks(selector: string, regions: string[], platform: string) {
           surface_type: attr.surfaceType,
           surface_title: attr.surfaceTitle,
           href: elementProperties.href,
-          country: lib.getRegionFromPath(regions, pageData.path),
+          locale: lib.getRegionFromPath(regions, pageData.path),
           platform,
           category: attr.category,
           eventLabel: name,
@@ -162,7 +163,7 @@ function textEntered(selector: string, regions: string[], platform: string) {
         surface_title: input.surface_title,
         value: input.value,
         field_name: input.field_name,
-        country: lib.getRegionFromPath(regions, pageData.path),
+        locale: lib.getRegionFromPath(regions, pageData.path),
         platform,
         ...pageData.params,
       }
@@ -225,7 +226,7 @@ function optionSelected(selector: string, regions: string[], platform: string) {
         element_type: input.type,
         surface_type: input.surface_type,
         surface_title: input.surface_title,
-        country: lib.getRegionFromPath(regions, pageData.path),
+        locale: lib.getRegionFromPath(regions, pageData.path),
         platform,
         ...pageData.params,
       }
@@ -244,7 +245,7 @@ function optionSelected(selector: string, regions: string[], platform: string) {
 
 interface TrackData extends Record<string, any> {
   name: string
-  country: string
+  locale: string
   platform: string
   element_type: string
 }
