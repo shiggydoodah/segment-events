@@ -245,7 +245,7 @@ function optionSelected(selector: string, regions: string[], platform: string) {
 
 interface TrackData extends Record<string, any> {
   name: string
-  locale: string
+  locale?: string
   platform: string
   element_type: string
 }
