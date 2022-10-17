@@ -43,7 +43,6 @@ function pageView(pagName, region, platform, optionals) {
     if (typeof window === 'undefined' || !window.analytics)
         return;
     const data = lib.getPageInfo();
-    console.log(lib.getPageInfo());
     window.analytics.page(Object.assign(Object.assign({ name: pagName, path: window.location.pathname, locale: region }, data.params), { platform }));
     if (data.params) {
         window.analytics.identify(Object.assign(Object.assign({}, data.params), { locale: region }));

@@ -100,7 +100,6 @@ function page(options: PageOptions) {
 function pageView(pagName: string, region: string, platform: string, optionals?: OptionalTrackProperties) {
   if (typeof window === 'undefined' || !window.analytics) return
   const data = lib.getPageInfo()
-  console.log(lib.getPageInfo())
   window.analytics.page({
     name: pagName,
     path: window.location.pathname,

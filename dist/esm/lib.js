@@ -32,6 +32,7 @@ function getUTM() {
         gclid: null,
         utm_cta: null,
         target_id: null,
+        of_source: null,
     };
     return defaultUtms;
 }
@@ -65,6 +66,9 @@ function utmSourceTracking() {
         const defaultUtms = getUTM();
         const searchParams = Object.keys(window.location.search);
         if (searchParams.length > 0) {
+            if (window.location.search.indexOf('disableAnalytics') > -1) {
+                setCookie('disableAnalytics', 'true');
+            }
             for (let key in defaultUtms) {
                 const value = getParameterByName(key);
                 if (value) {

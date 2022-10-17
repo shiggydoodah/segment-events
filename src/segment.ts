@@ -3,7 +3,6 @@ declare global {
     analytics?: any
   }
 }
-
 export interface SegmentOptions {
   methods?: string[]
   useDefault?: boolean
