@@ -60,23 +60,24 @@ function page(options) {
         }
     }
     const page = hasPageName ? hasPageName : data.path;
-    (_a = window.analytics) === null || _a === void 0 ? void 0 : _a.page(page, Object.assign(Object.assign({ name: page, path: data.path, locale: locale }, data.utms), { platform }));
+    (_a = window.analytics) === null || _a === void 0 ? void 0 : _a.page(page, Object.assign(Object.assign({ name: page, path: data.path, locale: locale }, data.utms), { platform, user_agent: window.navigator.userAgent || '' }));
     if (data.params) {
         window.analytics.identify(Object.assign(Object.assign({}, data.utms), { locale: locale }));
     }
 }
 exports.page = page;
-function pageView(pagName, region, platform) {
+function pageView(pagName, region, platform, optionals) {
     if (typeof window === 'undefined' || !window.analytics)
         return;
     const data = lib.getPageInfo();
+    console.log(lib.getPageInfo());
     window.analytics.page(Object.assign(Object.assign({ name: pagName, path: window.location.pathname, locale: region }, data.params), { platform }));
     if (data.params) {
         window.analytics.identify(Object.assign(Object.assign({}, data.params), { locale: region }));
     }
 }
 exports.pageView = pageView;
-function clicks(selector, regions, platform) {
+function clicks(selector, regions, platform, optionals) {
     if (typeof window === 'undefined' || !window.analytics)
         return;
     const elements = document.querySelectorAll(selector);
@@ -88,23 +89,24 @@ function clicks(selector, regions, platform) {
                 const attr = lib.getAttributes(el);
                 const elementProperties = lib.getElementProperties(el);
                 const name = attr.name ? attr.name : elementProperties.text;
-                const data = Object.assign({ name, page: pageData.pageName, url: pageData.url, element_type: attr.type, surface_type: attr.surfaceType, surface_title: attr.surfaceTitle, href: elementProperties.href, locale: lib.getRegionFromPath(regions, pageData.path), platform, category: attr.category, eventLabel: name, label: name, eventCategory: attr.category || 'All', eventAction: 'event' }, pageData.params);
+                const data = Object.assign(Object.assign({ name, page: pageData.pageName, url: pageData.url, element_type: attr.type, surface_type: attr.surfaceType, surface_title: attr.surfaceTitle, href: elementProperties.href, locale: lib.getRegionFromPath(regions, pageData.path), platform, category: attr.category, event_label: name, label: name, event_category: attr.category || 'All', event_action: 'event' }, pageData.params), { user_agent: window.navigator.userAgent || '' });
                 window.analytics.track(TrackEvents.ElementClicked, data);
             });
         }
     }
 }
 exports.clicks = clicks;
-function textEntered(selector, regions, platform) {
+function textEntered(selector, regions, platform, optionals) {
     if (typeof window === 'undefined' || !window.analytics)
         return;
     const elements = document.querySelectorAll(selector);
+    const options = lib.useOptionalsData(optionals);
     for (let i = 0; i < elements.length; i++) {
         elements[i].addEventListener('change', (e) => {
             const el = e.target;
             const pageData = lib.getPageInfo();
             const input = lib.getInputProperties(el);
-            const data = Object.assign({ name: input.name, page: pageData.pageName, url: pageData.url, element_type: input.type, surface_type: input.surface_type, surface_title: input.surface_title, value: input.value, field_name: input.field_name, locale: lib.getRegionFromPath(regions, pageData.path), platform }, pageData.params);
+            const data = Object.assign(Object.assign(Object.assign({ name: input.name, page: pageData.pageName, url: pageData.url, element_type: input.type, surface_type: input.surface_type, surface_title: input.surface_title, value: input.value, field_name: input.field_name, locale: lib.getRegionFromPath(regions, pageData.path), platform }, pageData.params), { user_agent: window.navigator.userAgent || '' }), options);
             window.analytics.track(TrackEvents.TextEntered, data);
             if (input.trait && input.value && input.value.length > 0) {
                 window.analytics.identify({
@@ -115,10 +117,11 @@ function textEntered(selector, regions, platform) {
     }
 }
 exports.textEntered = textEntered;
-function optionSelected(selector, regions, platform) {
+function optionSelected(selector, regions, platform, optionals) {
     if (typeof window === 'undefined' || !window.analytics)
         return;
     const elements = document.querySelectorAll(selector);
+    const options = lib.useOptionalsData(optionals);
     for (let i = 0; i < elements.length; i++) {
         elements[i].addEventListener('change', (e) => {
             const el = e.target;
@@ -147,8 +150,9 @@ function optionSelected(selector, regions, platform) {
             const pageData = lib.getPageInfo();
             const input = lib.getInputProperties(el);
             const value = optionValue || input.value;
-            const data = Object.assign({ name: optionName || input.name, option, field_name: input.field_name, value: value, page: pageData.pageName, url: pageData.url, element_type: input.type, surface_type: input.surface_type, surface_title: input.surface_title, locale: lib.getRegionFromPath(regions, pageData.path), platform }, pageData.params);
+            const data = Object.assign(Object.assign({ name: optionName || input.name, option, field_name: input.field_name, value: value, page: pageData.pageName, url: pageData.url, element_type: input.type, surface_type: input.surface_type, surface_title: input.surface_title, locale: lib.getRegionFromPath(regions, pageData.path), platform, user_agent: window.navigator.userAgent || '' }, pageData.params), options);
             window.analytics.track(TrackEvents.OptionSelected, data);
+            window.analytics.trackClick(data);
             if (input.trait && value && value.length > 0) {
                 window.analytics.identify({
                     [input.trait]: value,
@@ -167,7 +171,7 @@ function trackClick(e, data) {
         surface_type: attr.surfaceType || '',
         surface_title: attr.surfaceTitle || '',
     };
-    const eventData = Object.assign(Object.assign(Object.assign(Object.assign({}, data), elementAttributes), { page: pageData.pageName, url: pageData.url }), pageData.params);
+    const eventData = Object.assign(Object.assign(Object.assign(Object.assign({}, data), elementAttributes), { page: pageData.pageName, url: pageData.url, user_agent: window.navigator.userAgent || '' }), pageData.params);
     window.analytics.track(TrackEvents.ElementClicked, Object.assign({}, eventData));
 }
 exports.trackClick = trackClick;
@@ -191,7 +195,7 @@ function customEvent(eventName, data) {
     if (typeof window === 'undefined' || !window.analytics)
         return;
     const pageData = lib.getPageInfo();
-    const eventData = Object.assign(Object.assign(Object.assign({}, data), { page: pageData.pageName, url: pageData.url }), pageData.params);
+    const eventData = Object.assign(Object.assign(Object.assign(Object.assign({}, data), { page: pageData.pageName, url: pageData.url }), pageData.params), { user_agent: window.navigator.userAgent || '' });
     window.analytics.track(eventName, Object.assign({}, eventData));
 }
 exports.customEvent = customEvent;

@@ -14,10 +14,11 @@ export interface CommonProperties {
     country?: string;
     locale?: string;
     category?: string;
-    eventLabel: string | undefined;
-    eventCategory: string | undefined;
-    eventAction: string | undefined;
+    event_label: string | undefined;
+    event_category: string | undefined;
+    event_action: string | undefined;
     label: string | undefined;
+    user_agent?: any;
 }
 export interface IElementClicked extends CommonProperties {
     href: string | undefined;
@@ -36,11 +37,12 @@ interface PageOptions {
     platform: string;
     pageNames?: PageNames[];
 }
+declare type OptionalTrackProperties = Record<string, any>;
 declare function page(options: PageOptions): void;
-declare function pageView(pagName: string, region: string, platform: string): void;
-declare function clicks(selector: string, regions: string[], platform: string): void;
-declare function textEntered(selector: string, regions: string[], platform: string): void;
-declare function optionSelected(selector: string, regions: string[], platform: string): void;
+declare function pageView(pagName: string, region: string, platform: string, optionals?: OptionalTrackProperties): void;
+declare function clicks(selector: string, regions: string[], platform: string, optionals?: OptionalTrackProperties): void;
+declare function textEntered(selector: string, regions: string[], platform: string, optionals?: OptionalTrackProperties): void;
+declare function optionSelected(selector: string, regions: string[], platform: string, optionals?: OptionalTrackProperties): void;
 interface TrackData extends Record<string, any> {
     name: string;
     locale?: string;

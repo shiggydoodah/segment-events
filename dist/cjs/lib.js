@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.utmsFromCookie = exports.parsePageNameFromPath = exports.getInputLableValue = exports.getInputProperties = exports.getElementProperties = exports.getSurfaceData = exports.getAttributes = exports.getDataAttribute = exports.getParams = exports.getPageInfo = exports.getPageName = exports.getRegionFromPath = exports.utmCookie = exports.utmSourceTracking = exports.getParameterByName = exports.getCookie = exports.setCookie = void 0;
+exports.useOptionalsData = exports.utmsFromCookie = exports.parsePageNameFromPath = exports.getInputLableValue = exports.getInputProperties = exports.getElementProperties = exports.getSurfaceData = exports.getAttributes = exports.getDataAttribute = exports.getParams = exports.getPageInfo = exports.getPageName = exports.getRegionFromPath = exports.utmCookie = exports.utmSourceTracking = exports.getParameterByName = exports.getCookie = exports.setCookie = void 0;
 function setCookie(name, value) {
     let d = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
     let expires = 'expires=' + d.toUTCString();
@@ -35,14 +35,7 @@ function getUTM() {
         utm_term: null,
         utm_id: null,
         gclid: null,
-        // utm_chnl_adgrp: null,
-        // utm_chnl_adgrp_id: null,
         utm_cta: null,
-        // utm_chnl_cmp: null,
-        // utm_outfund: null,
-        // utm_outfund_id: null,
-        // utm_outfund_source: null,
-        // ad_group: null,
         target_id: null,
     };
     return defaultUtms;
@@ -70,46 +63,49 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 exports.getParameterByName = getParameterByName;
-// function utmSourceTracking(url?: string, utmParams?: AnalyticsParams) {
-//   const cookie = getCookie('outfund_analytics')
-//   const allowedUtms = getUTM()
-//   let utms = {} as AnalyticsParams
-//   if (cookie && Object.keys(cookie) && Object.keys(cookie).length > 0) {
-//     utms = cookie
-//   }
-//   for (let key in allowedUtms) {
-//     const value = getParameterByName(key, url)
-//     if (value) {
-//       utms[key! as keyof AnalyticsParams] = value
-//       setCookie('outfund_analytics', utms)
-//     }
-//   }
-//   return utms
-// }
 function utmSourceTracking() {
     if (typeof window === 'undefined')
         return;
     const defaultUtms = getUTM();
-    const searchParams = Object.keys(window.location.search);
-    const cookie = getCookie('outfund_utm');
-    let utms = {};
-    if (!cookie) {
-        setCookie('outfund_utm', defaultUtms);
-        utms = defaultUtms;
-    }
-    else {
-        utms = cookie;
-    }
-    if (searchParams.length > 0) {
-        for (let key in defaultUtms) {
-            const value = getParameterByName(key);
-            if (value) {
-                utms[key] = value;
+    const getUTMsFromParams = () => {
+        let utms = {};
+        const defaultUtms = getUTM();
+        const searchParams = Object.keys(window.location.search);
+        if (searchParams.length > 0) {
+            for (let key in defaultUtms) {
+                const value = getParameterByName(key);
+                if (value) {
+                    utms[key] = value;
+                }
+            }
+            if (Object.keys(utms).length > 0) {
+                return {
+                    first_touch: Object.assign(Object.assign({}, defaultUtms), utms),
+                    most_recent: Object.assign(Object.assign({}, defaultUtms), utms),
+                };
             }
         }
+        return false;
+    };
+    const cookie = getCookie('outfund_utm');
+    const utms = getUTMsFromParams();
+    if (utms && !cookie) {
         setCookie('outfund_utm', utms);
+        return utms;
     }
-    return utms;
+    if (utms && cookie) {
+        const first = cookie.first_touch;
+        const utmData = {
+            first_touch: first,
+            most_recent: utms.most_recent,
+        };
+        setCookie('outfund_utm', utmData);
+        return utmData;
+    }
+    return {
+        first_touch: defaultUtms,
+        most_recent: defaultUtms,
+    };
 }
 exports.utmSourceTracking = utmSourceTracking;
 function utmsFromCookie() {
@@ -120,21 +116,6 @@ function utmsFromCookie() {
     return defaultUtms;
 }
 exports.utmsFromCookie = utmsFromCookie;
-// function setUTMCookie() {
-//   if (typeof window === 'undefined') return
-//   if (!getCookie('outfund_analytics')) {
-//     const utms = {
-//       utm_source: getParameterByName('utm_source') || '',
-//       utm_medium: getParameterByName('utm_medium') || '',
-//       utm_campaign: getParameterByName('utm_campaign') || '',
-//       utm_content: getParameterByName('utm_content') || '',
-//       utm_term: getParameterByName('utm_term') || '',
-//       utm_id: getParameterByName('utm_id') || '',
-//       gclid: getParameterByName('gclid') || '',
-//     }
-//     setCookie('most_recent_utms', utms)
-//   }
-// }
 function utmCookie() {
     const cookie = getCookie('outfund_analytics');
     if (cookie)
@@ -191,6 +172,15 @@ var CustomAttributes;
     CustomAttributes["surfaceType"] = "data-surface-type";
     CustomAttributes["category"] = "data-element-category";
 })(CustomAttributes || (CustomAttributes = {}));
+function useOptionalsData(options) {
+    if (options !== undefined) {
+        return options;
+    }
+    else {
+        return {};
+    }
+}
+exports.useOptionalsData = useOptionalsData;
 function getSurfaceData(element, surface) {
     let surfaceData = element.getAttribute(`data-surface-${surface}`) || false;
     if (surfaceData)

@@ -15,10 +15,11 @@ export interface CommonProperties {
   country?: string
   locale?: string
   category?: string
-  eventLabel: string | undefined
-  eventCategory: string | undefined
-  eventAction: string | undefined
+  event_label: string | undefined
+  event_category: string | undefined
+  event_action: string | undefined
   label: string | undefined
+  user_agent?: any
 }
 export interface IElementClicked extends CommonProperties {
   href: string | undefined
@@ -64,6 +65,8 @@ interface PageOptions {
   pageNames?: PageNames[]
 }
 
+type OptionalTrackProperties = Record<string, any>
+
 function page(options: PageOptions) {
   const { regions, platform, pageNames = [] } = options
   if (typeof window === 'undefined') return
@@ -84,6 +87,7 @@ function page(options: PageOptions) {
     locale: locale,
     ...data.utms,
     platform,
+    user_agent: window.navigator.userAgent || '',
   })
   if (data.params) {
     window.analytics.identify({
@@ -93,9 +97,10 @@ function page(options: PageOptions) {
   }
 }
 
-function pageView(pagName: string, region: string, platform: string) {
+function pageView(pagName: string, region: string, platform: string, optionals?: OptionalTrackProperties) {
   if (typeof window === 'undefined' || !window.analytics) return
   const data = lib.getPageInfo()
+  console.log(lib.getPageInfo())
   window.analytics.page({
     name: pagName,
     path: window.location.pathname,
@@ -111,7 +116,7 @@ function pageView(pagName: string, region: string, platform: string) {
   }
 }
 
-function clicks(selector: string, regions: string[], platform: string) {
+function clicks(selector: string, regions: string[], platform: string, optionals?: OptionalTrackProperties) {
   if (typeof window === 'undefined' || !window.analytics) return
   const elements = document.querySelectorAll(selector)
   const pageData = lib.getPageInfo()
@@ -133,11 +138,12 @@ function clicks(selector: string, regions: string[], platform: string) {
           locale: lib.getRegionFromPath(regions, pageData.path),
           platform,
           category: attr.category,
-          eventLabel: name,
+          event_label: name,
           label: name,
-          eventCategory: attr.category || 'All',
-          eventAction: 'event',
+          event_category: attr.category || 'All',
+          event_action: 'event',
           ...pageData.params,
+          user_agent: window.navigator.userAgent || '',
         }
         window.analytics.track(TrackEvents.ElementClicked, data)
       })
@@ -145,10 +151,10 @@ function clicks(selector: string, regions: string[], platform: string) {
   }
 }
 
-function textEntered(selector: string, regions: string[], platform: string) {
+function textEntered(selector: string, regions: string[], platform: string, optionals?: OptionalTrackProperties) {
   if (typeof window === 'undefined' || !window.analytics) return
   const elements = document.querySelectorAll(selector)
-
+  const options = lib.useOptionalsData(optionals)
   for (let i = 0; i < elements.length; i++) {
     elements[i].addEventListener('change', (e) => {
       const el = e.target as HTMLInputElement
@@ -166,6 +172,8 @@ function textEntered(selector: string, regions: string[], platform: string) {
         locale: lib.getRegionFromPath(regions, pageData.path),
         platform,
         ...pageData.params,
+        user_agent: window.navigator.userAgent || '',
+        ...options,
       }
       window.analytics.track(TrackEvents.TextEntered, data)
       if (input.trait && input.value && input.value.length > 0) {
@@ -179,10 +187,10 @@ function textEntered(selector: string, regions: string[], platform: string) {
 
 type OptionElement = HTMLOptionElement | HTMLInputElement | HTMLSelectElement
 
-function optionSelected(selector: string, regions: string[], platform: string) {
+function optionSelected(selector: string, regions: string[], platform: string, optionals?: OptionalTrackProperties) {
   if (typeof window === 'undefined' || !window.analytics) return
   const elements = document.querySelectorAll(selector)
-
+  const options = lib.useOptionalsData(optionals)
   for (let i = 0; i < elements.length; i++) {
     elements[i].addEventListener('change', (e) => {
       const el = e.target as OptionElement
@@ -228,9 +236,12 @@ function optionSelected(selector: string, regions: string[], platform: string) {
         surface_title: input.surface_title,
         locale: lib.getRegionFromPath(regions, pageData.path),
         platform,
+        user_agent: window.navigator.userAgent || '',
         ...pageData.params,
+        ...options,
       }
       window.analytics.track(TrackEvents.OptionSelected, data)
+      window.analytics.trackClick(data)
 
       if (input.trait && value && value.length > 0) {
         window.analytics.identify({
@@ -242,7 +253,6 @@ function optionSelected(selector: string, regions: string[], platform: string) {
 }
 
 // CRA Functions
-
 interface TrackData extends Record<string, any> {
   name: string
   locale?: string
@@ -264,6 +274,7 @@ function trackClick(e: HTMLElement, data: TrackData) {
     ...elementAttributes,
     page: pageData.pageName,
     url: pageData.url,
+    user_agent: window.navigator.userAgent || '',
     ...pageData.params,
   }
 
@@ -307,6 +318,7 @@ function customEvent(eventName: string, data: TrackData) {
     page: pageData.pageName,
     url: pageData.url,
     ...pageData.params,
+    user_agent: window.navigator.userAgent || '',
   }
   window.analytics.track(eventName, {
     ...eventData,

@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function default_1(segmentKey, options) {
-    const { methods = [], useDefault = true, cookieBanner = false } = options;
+    const { methods = [], useDefault = true, cookieBanner = false, disabled = false } = options;
     const analytics = window.analytics || [];
     const defaultMethods = useDefault
         ? [
@@ -57,6 +57,10 @@ function default_1(segmentKey, options) {
             analytics._writeKey = segmentKey;
             analytics.SNIPPET_VERSION = '4.15.3';
             !cookieBanner && analytics.load(segmentKey);
+            if (!cookieBanner || !disabled) {
+                analytics.load(segmentKey);
+            }
+            return;
         }
 }
 exports.default = default_1;

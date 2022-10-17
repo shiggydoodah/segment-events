@@ -3,11 +3,14 @@ declare type PageNames = {
     name: string;
     path: string;
 };
-declare function setCookie(name: string, value: AnalyticsParams): void;
+declare function setCookie(name: string, value: any): void;
 declare function getCookie(cookie_name: string): AnalyticsParams | false;
 declare function getParams(): Record<string, any>;
 declare function getParameterByName(name: string, url?: string): string | null;
-declare function utmSourceTracking(): AnalyticsParams | undefined;
+declare function utmSourceTracking(): Record<string, AnalyticsParams> | {
+    first_touch: string | null;
+    most_recent: AnalyticsParams;
+} | undefined;
 declare function utmsFromCookie(): AnalyticsParams;
 declare function utmCookie(): false | AnalyticsParams;
 declare function getRegionFromPath(regions: string[], path: string): string;
@@ -15,10 +18,17 @@ declare function getPageName(title: string, pageNames?: PageNames): string | und
 declare function getPageInfo(): {
     path: string;
     url: string;
-    utms: AnalyticsParams | undefined;
+    utms: Record<string, AnalyticsParams> | {
+        first_touch: string | null;
+        most_recent: AnalyticsParams;
+    } | undefined;
     pageName: string | undefined;
-    params: AnalyticsParams | undefined;
+    params: Record<string, AnalyticsParams> | {
+        first_touch: string | null;
+        most_recent: AnalyticsParams;
+    } | undefined;
 };
+declare function useOptionalsData(options: Record<string, any> | undefined): Record<string, any>;
 declare function getSurfaceData(element: HTMLElement, surface: 'type' | 'title'): string;
 declare function getDataAttribute(attribute: string, element: HTMLElement): string;
 declare function getAttributes(element: HTMLElement): {
@@ -48,4 +58,4 @@ declare type PageOptions = {
     name: string;
 };
 declare function parsePageNameFromPath(pages: PageOptions[] | [], region: string[]): string | false;
-export { setCookie, getCookie, getParameterByName, utmSourceTracking, utmCookie, getRegionFromPath, getPageName, getPageInfo, getParams, getDataAttribute, getAttributes, getSurfaceData, getElementProperties, getInputProperties, getInputLableValue, parsePageNameFromPath, utmsFromCookie, };
+export { setCookie, getCookie, getParameterByName, utmSourceTracking, utmCookie, getRegionFromPath, getPageName, getPageInfo, getParams, getDataAttribute, getAttributes, getSurfaceData, getElementProperties, getInputProperties, getInputLableValue, parsePageNameFromPath, utmsFromCookie, useOptionalsData, };
