@@ -19,7 +19,6 @@ export interface CommonProperties {
   event_category: string | undefined
   event_action: string | undefined
   label: string | undefined
-  user_agent?: any
 }
 export interface IElementClicked extends CommonProperties {
   href: string | undefined
@@ -87,7 +86,6 @@ function page(options: PageOptions) {
     locale: locale,
     ...data.utms,
     platform,
-    user_agent: window.navigator.userAgent || '',
   })
   if (data.params) {
     window.analytics.identify({
@@ -142,7 +140,6 @@ function clicks(selector: string, regions: string[], platform: string, optionals
           event_category: attr.category || 'All',
           event_action: 'event',
           ...pageData.params,
-          user_agent: window.navigator.userAgent || '',
         }
         window.analytics.track(TrackEvents.ElementClicked, data)
       })
@@ -171,7 +168,6 @@ function textEntered(selector: string, regions: string[], platform: string, opti
         locale: lib.getRegionFromPath(regions, pageData.path),
         platform,
         ...pageData.params,
-        user_agent: window.navigator.userAgent || '',
         ...options,
       }
       window.analytics.track(TrackEvents.TextEntered, data)
@@ -235,7 +231,6 @@ function optionSelected(selector: string, regions: string[], platform: string, o
         surface_title: input.surface_title,
         locale: lib.getRegionFromPath(regions, pageData.path),
         platform,
-        user_agent: window.navigator.userAgent || '',
         ...pageData.params,
         ...options,
       }
@@ -273,7 +268,6 @@ function trackClick(e: HTMLElement, data: TrackData) {
     ...elementAttributes,
     page: pageData.pageName,
     url: pageData.url,
-    user_agent: window.navigator.userAgent || '',
     ...pageData.params,
   }
 
@@ -317,7 +311,6 @@ function customEvent(eventName: string, data: TrackData) {
     page: pageData.pageName,
     url: pageData.url,
     ...pageData.params,
-    user_agent: window.navigator.userAgent || '',
   }
   window.analytics.track(eventName, {
     ...eventData,
