@@ -18,7 +18,6 @@ export interface CommonProperties {
     event_category: string | undefined;
     event_action: string | undefined;
     label: string | undefined;
-    user_agent?: any;
 }
 export interface IElementClicked extends CommonProperties {
     href: string | undefined;

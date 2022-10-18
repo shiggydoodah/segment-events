@@ -58,8 +58,6 @@ function getParameterByName(name, url) {
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 function utmSourceTracking() {
-    if (typeof window === 'undefined')
-        return;
     const defaultUtms = getUTM();
     const getUTMsFromParams = () => {
         let utms = {};

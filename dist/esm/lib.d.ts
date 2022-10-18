@@ -10,7 +10,7 @@ declare function getParameterByName(name: string, url?: string): string | null;
 declare function utmSourceTracking(): Record<string, AnalyticsParams> | {
     first_touch: string | null;
     most_recent: AnalyticsParams;
-} | undefined;
+};
 declare function utmsFromCookie(): AnalyticsParams;
 declare function utmCookie(): false | AnalyticsParams;
 declare function getRegionFromPath(regions: string[], path: string): string;
@@ -21,12 +21,12 @@ declare function getPageInfo(): {
     utms: Record<string, AnalyticsParams> | {
         first_touch: string | null;
         most_recent: AnalyticsParams;
-    } | undefined;
+    };
     pageName: string | undefined;
     params: Record<string, AnalyticsParams> | {
         first_touch: string | null;
         most_recent: AnalyticsParams;
-    } | undefined;
+    };
 };
 declare function useOptionalsData(options: Record<string, any> | undefined): Record<string, any>;
 declare function getSurfaceData(element: HTMLElement, surface: 'type' | 'title'): string;

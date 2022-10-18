@@ -65,8 +65,6 @@ function getParameterByName(name, url) {
 }
 exports.getParameterByName = getParameterByName;
 function utmSourceTracking() {
-    if (typeof window === 'undefined')
-        return;
     const defaultUtms = getUTM();
     const getUTMsFromParams = () => {
         let utms = {};

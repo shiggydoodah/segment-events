@@ -11,7 +11,7 @@ export interface SegmentOptions {
 }
 
 export default function (segmentKey: string, options: SegmentOptions) {
-  const { methods = [], useDefault = true, cookieBanner = false, disabled = false } = options
+  const { methods = [], useDefault = true, cookieBanner = false } = options
   const analytics = (window as Window).analytics || []
   const defaultMethods = useDefault
     ? [
@@ -67,9 +67,6 @@ export default function (segmentKey: string, options: SegmentOptions) {
       analytics._writeKey = segmentKey
       analytics.SNIPPET_VERSION = '4.15.3'
       !cookieBanner && analytics.load(segmentKey)
-      if (!cookieBanner || !disabled) {
-        analytics.load(segmentKey)
-      }
       return
     }
 }

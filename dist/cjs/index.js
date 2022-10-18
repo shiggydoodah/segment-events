@@ -36,19 +36,10 @@ const lib_1 = require("./lib");
 Object.defineProperty(exports, "utmCookie", { enumerable: true, get: function () { return lib_1.utmCookie; } });
 Object.defineProperty(exports, "utmSourceTracking", { enumerable: true, get: function () { return lib_1.utmSourceTracking; } });
 const initSegment = (segmentKey, options) => {
-    if (typeof window === 'undefined') {
-        return;
+    if (typeof window !== 'undefined') {
+        (0, segment_1.default)(segmentKey, options);
     }
-    (0, segment_1.default)(segmentKey, options);
-    // window.analytics.on('track', function (event: string, properties: Record<string, any>) {
-    // custom logic based on event properties
-    // ga('secondTracker.send', {
-    //   hitType: 'event',
-    //   eventCategory: properties.category || 'All',
-    //   eventAction: event,
-    //   eventLabel: properties.label || 'All'
-    // })
-    // })
+    return;
 };
 exports.initSegment = initSegment;
 const trackClick = track.trackClick;
