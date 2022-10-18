@@ -65,9 +65,7 @@ function getParameterByName(name: string, url?: string) {
 }
 
 function utmSourceTracking() {
-  if (typeof window === 'undefined') return
   const defaultUtms = getUTM()
-
   const getUTMsFromParams = (): Record<string, AnalyticsParams> | false => {
     let utms = {} as AnalyticsParams
     const defaultUtms = getUTM()
