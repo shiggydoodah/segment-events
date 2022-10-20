@@ -71,6 +71,7 @@ function page(options: PageOptions) {
   if (typeof window === 'undefined') return
   if (!window.analytics) return
   const data = lib.getPageInfo()
+  const utms = lib.getUTMs()
   const locale = lib.getRegionFromPath(regions, data.path)
   let hasPageName: string | false = false
 
@@ -80,38 +81,34 @@ function page(options: PageOptions) {
     }
   }
   const page = hasPageName ? hasPageName : data.path
-  const oldUtms = data.utms.first_touch || {}
   window.analytics?.page(page, {
     name: page,
     path: data.path,
     locale: locale,
-    ...data.utms,
-    ...(oldUtms! as object),
+    ...utms,
     platform,
   })
-  if (data.params) {
+  if (utms.utms_from_params) {
     window.analytics.identify({
-      ...data.utms,
       locale: locale,
+      ...utms,
     })
   }
 }
 
 function pageView(pagName: string, region: string, platform: string, optionals?: OptionalTrackProperties) {
   if (typeof window === 'undefined' || !window.analytics) return
-  const data = lib.getPageInfo()
-  const oldUtms = data.utms.first_touch || {}
+  const utms = lib.getUTMs()
   window.analytics.page({
     name: pagName,
     path: window.location.pathname,
     locale: region,
-    ...data.params,
-    ...(oldUtms! as object),
+    ...utms,
     platform,
   })
-  if (data.params) {
+  if (utms.utms_from_params) {
     window.analytics.identify({
-      ...data.params,
+      ...utms,
       locale: region,
     })
   }
@@ -121,6 +118,7 @@ function clicks(selector: string, regions: string[], platform: string, optionals
   if (typeof window === 'undefined' || !window.analytics) return
   const elements = document.querySelectorAll(selector)
   const pageData = lib.getPageInfo()
+  const utms = lib.getUTMs()
   if (elements && elements.length > 0) {
     for (let i = 0; i < elements.length; i++) {
       elements[i].addEventListener('click', (e) => {
@@ -128,7 +126,6 @@ function clicks(selector: string, regions: string[], platform: string, optionals
         const attr = lib.getAttributes(el)
         const elementProperties = lib.getElementProperties(el)
         const name = attr.name ? attr.name : elementProperties.text
-        const oldUtms = pageData.utms.first_touch || {}
         const data: Partial<IElementClicked> = {
           name,
           page: pageData.pageName,
@@ -144,8 +141,7 @@ function clicks(selector: string, regions: string[], platform: string, optionals
           label: name,
           event_category: attr.category || 'All',
           event_action: 'event',
-          ...pageData.params,
-          ...(oldUtms! as object),
+          ...utms,
         }
         window.analytics.track(TrackEvents.ElementClicked, data)
       })
@@ -162,7 +158,7 @@ function textEntered(selector: string, regions: string[], platform: string, opti
       const el = e.target as HTMLInputElement
       const pageData = lib.getPageInfo()
       const input = lib.getInputProperties(el)
-      const oldUtms = pageData.utms.first_touch || {}
+      const utms = lib.getUTMs()
       const data: Partial<ITrackInputs> = {
         name: input.name,
         page: pageData.pageName,
@@ -174,9 +170,8 @@ function textEntered(selector: string, regions: string[], platform: string, opti
         field_name: input.field_name,
         locale: lib.getRegionFromPath(regions, pageData.path),
         platform,
-        ...pageData.params,
         ...options,
-        ...(oldUtms! as object),
+        ...utms,
       }
       window.analytics.track(TrackEvents.TextEntered, data)
       if (input.trait && input.value && input.value.length > 0) {
@@ -223,11 +218,10 @@ function optionSelected(selector: string, regions: string[], platform: string, o
           ? lib.getDataAttribute('element-name', inputOption)
           : lib.getInputLableValue(inputOption)
       }
-
       const pageData = lib.getPageInfo()
       const input = lib.getInputProperties(el)
       const value = optionValue || input.value
-      const oldUtms = pageData.utms.first_touch || {}
+      const utms = lib.getUTMs()
       const data: Partial<ITrackInputs> = {
         name: optionName || input.name,
         option,
@@ -240,9 +234,8 @@ function optionSelected(selector: string, regions: string[], platform: string, o
         surface_title: input.surface_title,
         locale: lib.getRegionFromPath(regions, pageData.path),
         platform,
-        ...pageData.params,
         ...options,
-        ...(oldUtms! as object),
+        ...utms,
       }
       window.analytics.track(TrackEvents.OptionSelected, data)
       window.analytics.trackClick(data)
@@ -256,7 +249,6 @@ function optionSelected(selector: string, regions: string[], platform: string, o
   }
 }
 
-// CRA Functions
 interface TrackData extends Record<string, any> {
   name: string
   locale?: string
@@ -268,8 +260,7 @@ function trackClick(e: HTMLElement, data: TrackData) {
   if (typeof window === 'undefined' || !window.analytics) return
   const pageData = lib.getPageInfo()
   const attr = lib.getAttributes(e)
-  const oldUtms = pageData.utms.first_touch || {}
-
+  const utms = lib.getUTMs()
   const elementAttributes = {
     surface_type: attr.surfaceType || '',
     surface_title: attr.surfaceTitle || '',
@@ -279,10 +270,8 @@ function trackClick(e: HTMLElement, data: TrackData) {
     ...elementAttributes,
     page: pageData.pageName,
     url: pageData.url,
-    ...pageData.params,
-    ...(oldUtms! as object),
+    ...utms,
   }
-
   window.analytics.track(TrackEvents.ElementClicked, {
     ...eventData,
   })
@@ -295,16 +284,15 @@ function trackTextInput(e: HTMLInputElement, data: TrackData, identify?: string)
     surface_type: input.surface_type,
     surface_title: input.surface_title,
   }
-  const oldUtms = pageData.utms.first_touch || {}
+  const utms = lib.getUTMs()
   const eventData = {
     ...data,
     ...inputAttributes,
-    ...pageData.params,
     page: pageData.pageName,
     url: pageData.url,
     field_name: e.name || '',
     value: e.type === 'password' ? '*******' : e.value || '',
-    ...(oldUtms! as object),
+    ...utms,
   }
 
   window.analytics.track(TrackEvents.TextEntered, {
@@ -320,13 +308,12 @@ function trackTextInput(e: HTMLInputElement, data: TrackData, identify?: string)
 function customEvent(eventName: string, data: TrackData) {
   if (typeof window === 'undefined' || !window.analytics) return
   const pageData = lib.getPageInfo()
-  const oldUtms = pageData.utms.first_touch || {}
+  const utms = lib.getUTMs()
   const eventData = {
     ...data,
     page: pageData.pageName,
     url: pageData.url,
-    ...pageData.params,
-    ...(oldUtms! as object),
+    ...utms,
   }
   window.analytics.track(eventName, {
     ...eventData,

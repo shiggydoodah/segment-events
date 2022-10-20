@@ -29,16 +29,16 @@ function getCookie(cookie_name: string): AnalyticsParams | false {
 
 function getUTM() {
   const defaultUtms: AnalyticsParams = {
-    utm_source: null,
-    utm_medium: null,
-    utm_campaign: null,
-    utm_content: null,
-    utm_term: null,
-    utm_id: null,
-    gclid: null,
-    utm_cta: null,
-    target_id: null,
-    of_source: null,
+    utm_source: '',
+    utm_medium: '',
+    utm_campaign: '',
+    utm_content: '',
+    utm_term: '',
+    utm_id: '',
+    gclid: '',
+    utm_cta: '',
+    target_id: '',
+    of_source: '',
   }
   return defaultUtms
 }
@@ -70,6 +70,7 @@ function utmSourceTracking() {
     let utms = {} as AnalyticsParams
     const defaultUtms = getUTM()
     const searchParams = Object.keys(window.location.search)
+
     if (searchParams.length > 0) {
       if (window.location.search.indexOf('disableAnalytics') > -1) {
         setCookie('disableAnalytics', 'true')
@@ -95,27 +96,38 @@ function utmSourceTracking() {
     }
     return false
   }
+
   const cookie = getCookie('outfund_utm')
   const utms = getUTMsFromParams()
 
   if (utms && !cookie) {
     setCookie('outfund_utm', utms)
-    return utms
+    return {
+      ...utms,
+      utm_from_params: true,
+    }
   }
-
+  if (!utms && cookie) {
+    return {
+      first_touch: cookie.first_touch,
+      most_recent: cookie.most_recent,
+      utm_from_params: false,
+    }
+  }
   if (utms && cookie) {
     const first = cookie.first_touch
     const utmData = {
       first_touch: first,
       most_recent: utms.most_recent,
+      utm_from_params: true,
     }
     setCookie('outfund_utm', utmData)
     return utmData
   }
-
   return {
     first_touch: defaultUtms,
     most_recent: defaultUtms,
+    utm_from_params: false,
   }
 }
 
@@ -158,15 +170,20 @@ function getPageName(title: string, pageNames?: PageNames) {
 function getPageInfo() {
   const path = document.location.pathname
   const url = document.location.href
-  const utms = utmSourceTracking()
   const pageName = getPageName(document.title)
-  const params = utms
   return {
     path,
     url,
-    utms,
     pageName,
-    params,
+  }
+}
+
+function getUTMs() {
+  const utms = utmSourceTracking()
+  return {
+    first_touch: utms.first_touch,
+    ...(utms.most_recent! as object),
+    utms_from_params: utms.utm_from_params,
   }
 }
 
@@ -282,7 +299,6 @@ type PageOptions = {
 function parsePageNameFromPath(pages: PageOptions[] | [], region: string[]): string | false {
   if (typeof window === 'undefined') return ''
   let path = document.location.pathname
-  //if region exists in path, remove it
   if (region && region.length > 0) {
     for (let i = 0; i < region.length; i++) {
       if (path.indexOf(`/${region[i]}`) > -1) {
@@ -312,6 +328,7 @@ export {
   getInputLableValue,
   parsePageNameFromPath,
   // utmParamTracking,
+  getUTMs,
   utmsFromCookie,
   useOptionalsData,
 }

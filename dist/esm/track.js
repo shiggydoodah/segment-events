@@ -26,6 +26,7 @@ function page(options) {
     if (!window.analytics)
         return;
     const data = lib.getPageInfo();
+    const utms = lib.getUTMs();
     const locale = lib.getRegionFromPath(regions, data.path);
     let hasPageName = false;
     if (pageNames && pageNames.length > 0) {
@@ -34,20 +35,18 @@ function page(options) {
         }
     }
     const page = hasPageName ? hasPageName : data.path;
-    const oldUtms = data.utms.first_touch || {};
-    (_a = window.analytics) === null || _a === void 0 ? void 0 : _a.page(page, Object.assign(Object.assign(Object.assign({ name: page, path: data.path, locale: locale }, data.utms), oldUtms), { platform }));
-    if (data.params) {
-        window.analytics.identify(Object.assign(Object.assign({}, data.utms), { locale: locale }));
+    (_a = window.analytics) === null || _a === void 0 ? void 0 : _a.page(page, Object.assign(Object.assign({ name: page, path: data.path, locale: locale }, utms), { platform }));
+    if (utms.utms_from_params) {
+        window.analytics.identify(Object.assign({ locale: locale }, utms));
     }
 }
 function pageView(pagName, region, platform, optionals) {
     if (typeof window === 'undefined' || !window.analytics)
         return;
-    const data = lib.getPageInfo();
-    const oldUtms = data.utms.first_touch || {};
-    window.analytics.page(Object.assign(Object.assign(Object.assign({ name: pagName, path: window.location.pathname, locale: region }, data.params), oldUtms), { platform }));
-    if (data.params) {
-        window.analytics.identify(Object.assign(Object.assign({}, data.params), { locale: region }));
+    const utms = lib.getUTMs();
+    window.analytics.page(Object.assign(Object.assign({ name: pagName, path: window.location.pathname, locale: region }, utms), { platform }));
+    if (utms.utms_from_params) {
+        window.analytics.identify(Object.assign(Object.assign({}, utms), { locale: region }));
     }
 }
 function clicks(selector, regions, platform, optionals) {
@@ -55,6 +54,7 @@ function clicks(selector, regions, platform, optionals) {
         return;
     const elements = document.querySelectorAll(selector);
     const pageData = lib.getPageInfo();
+    const utms = lib.getUTMs();
     if (elements && elements.length > 0) {
         for (let i = 0; i < elements.length; i++) {
             elements[i].addEventListener('click', (e) => {
@@ -62,8 +62,7 @@ function clicks(selector, regions, platform, optionals) {
                 const attr = lib.getAttributes(el);
                 const elementProperties = lib.getElementProperties(el);
                 const name = attr.name ? attr.name : elementProperties.text;
-                const oldUtms = pageData.utms.first_touch || {};
-                const data = Object.assign(Object.assign({ name, page: pageData.pageName, url: pageData.url, element_type: attr.type, surface_type: attr.surfaceType, surface_title: attr.surfaceTitle, href: elementProperties.href, locale: lib.getRegionFromPath(regions, pageData.path), platform, category: attr.category, event_label: name, label: name, event_category: attr.category || 'All', event_action: 'event' }, pageData.params), oldUtms);
+                const data = Object.assign({ name, page: pageData.pageName, url: pageData.url, element_type: attr.type, surface_type: attr.surfaceType, surface_title: attr.surfaceTitle, href: elementProperties.href, locale: lib.getRegionFromPath(regions, pageData.path), platform, category: attr.category, event_label: name, label: name, event_category: attr.category || 'All', event_action: 'event' }, utms);
                 window.analytics.track(TrackEvents.ElementClicked, data);
             });
         }
@@ -79,8 +78,8 @@ function textEntered(selector, regions, platform, optionals) {
             const el = e.target;
             const pageData = lib.getPageInfo();
             const input = lib.getInputProperties(el);
-            const oldUtms = pageData.utms.first_touch || {};
-            const data = Object.assign(Object.assign(Object.assign({ name: input.name, page: pageData.pageName, url: pageData.url, element_type: input.type, surface_type: input.surface_type, surface_title: input.surface_title, value: input.value, field_name: input.field_name, locale: lib.getRegionFromPath(regions, pageData.path), platform }, pageData.params), options), oldUtms);
+            const utms = lib.getUTMs();
+            const data = Object.assign(Object.assign({ name: input.name, page: pageData.pageName, url: pageData.url, element_type: input.type, surface_type: input.surface_type, surface_title: input.surface_title, value: input.value, field_name: input.field_name, locale: lib.getRegionFromPath(regions, pageData.path), platform }, options), utms);
             window.analytics.track(TrackEvents.TextEntered, data);
             if (input.trait && input.value && input.value.length > 0) {
                 window.analytics.identify({
@@ -123,8 +122,8 @@ function optionSelected(selector, regions, platform, optionals) {
             const pageData = lib.getPageInfo();
             const input = lib.getInputProperties(el);
             const value = optionValue || input.value;
-            const oldUtms = pageData.utms.first_touch || {};
-            const data = Object.assign(Object.assign(Object.assign({ name: optionName || input.name, option, field_name: input.field_name, value: value, page: pageData.pageName, url: pageData.url, element_type: input.type, surface_type: input.surface_type, surface_title: input.surface_title, locale: lib.getRegionFromPath(regions, pageData.path), platform }, pageData.params), options), oldUtms);
+            const utms = lib.getUTMs();
+            const data = Object.assign(Object.assign({ name: optionName || input.name, option, field_name: input.field_name, value: value, page: pageData.pageName, url: pageData.url, element_type: input.type, surface_type: input.surface_type, surface_title: input.surface_title, locale: lib.getRegionFromPath(regions, pageData.path), platform }, options), utms);
             window.analytics.track(TrackEvents.OptionSelected, data);
             window.analytics.trackClick(data);
             if (input.trait && value && value.length > 0) {
@@ -140,12 +139,12 @@ function trackClick(e, data) {
         return;
     const pageData = lib.getPageInfo();
     const attr = lib.getAttributes(e);
-    const oldUtms = pageData.utms.first_touch || {};
+    const utms = lib.getUTMs();
     const elementAttributes = {
         surface_type: attr.surfaceType || '',
         surface_title: attr.surfaceTitle || '',
     };
-    const eventData = Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({}, data), elementAttributes), { page: pageData.pageName, url: pageData.url }), pageData.params), oldUtms);
+    const eventData = Object.assign(Object.assign(Object.assign(Object.assign({}, data), elementAttributes), { page: pageData.pageName, url: pageData.url }), utms);
     window.analytics.track(TrackEvents.ElementClicked, Object.assign({}, eventData));
 }
 function trackTextInput(e, data, identify) {
@@ -155,8 +154,8 @@ function trackTextInput(e, data, identify) {
         surface_type: input.surface_type,
         surface_title: input.surface_title,
     };
-    const oldUtms = pageData.utms.first_touch || {};
-    const eventData = Object.assign(Object.assign(Object.assign(Object.assign(Object.assign({}, data), inputAttributes), pageData.params), { page: pageData.pageName, url: pageData.url, field_name: e.name || '', value: e.type === 'password' ? '*******' : e.value || '' }), oldUtms);
+    const utms = lib.getUTMs();
+    const eventData = Object.assign(Object.assign(Object.assign(Object.assign({}, data), inputAttributes), { page: pageData.pageName, url: pageData.url, field_name: e.name || '', value: e.type === 'password' ? '*******' : e.value || '' }), utms);
     window.analytics.track(TrackEvents.TextEntered, Object.assign({}, eventData));
     if (identify && e.value && e.value.length > 0) {
         window.analytics.identify({
@@ -168,8 +167,8 @@ function customEvent(eventName, data) {
     if (typeof window === 'undefined' || !window.analytics)
         return;
     const pageData = lib.getPageInfo();
-    const oldUtms = pageData.utms.first_touch || {};
-    const eventData = Object.assign(Object.assign(Object.assign(Object.assign({}, data), { page: pageData.pageName, url: pageData.url }), pageData.params), oldUtms);
+    const utms = lib.getUTMs();
+    const eventData = Object.assign(Object.assign(Object.assign({}, data), { page: pageData.pageName, url: pageData.url }), utms);
     window.analytics.track(eventName, Object.assign({}, eventData));
 }
 export { page, clicks, textEntered, optionSelected, pageView, trackClick, trackTextInput, customEvent };

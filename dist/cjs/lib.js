@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useOptionalsData = exports.utmsFromCookie = exports.parsePageNameFromPath = exports.getInputLableValue = exports.getInputProperties = exports.getElementProperties = exports.getSurfaceData = exports.getAttributes = exports.getDataAttribute = exports.getParams = exports.getPageInfo = exports.getPageName = exports.getRegionFromPath = exports.utmCookie = exports.utmSourceTracking = exports.getParameterByName = exports.getCookie = exports.setCookie = void 0;
+exports.useOptionalsData = exports.utmsFromCookie = exports.getUTMs = exports.parsePageNameFromPath = exports.getInputLableValue = exports.getInputProperties = exports.getElementProperties = exports.getSurfaceData = exports.getAttributes = exports.getDataAttribute = exports.getParams = exports.getPageInfo = exports.getPageName = exports.getRegionFromPath = exports.utmCookie = exports.utmSourceTracking = exports.getParameterByName = exports.getCookie = exports.setCookie = void 0;
 function setCookie(name, value) {
     let d = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
     let expires = 'expires=' + d.toUTCString();
@@ -28,16 +28,16 @@ function getCookie(cookie_name) {
 exports.getCookie = getCookie;
 function getUTM() {
     const defaultUtms = {
-        utm_source: null,
-        utm_medium: null,
-        utm_campaign: null,
-        utm_content: null,
-        utm_term: null,
-        utm_id: null,
-        gclid: null,
-        utm_cta: null,
-        target_id: null,
-        of_source: null,
+        utm_source: '',
+        utm_medium: '',
+        utm_campaign: '',
+        utm_content: '',
+        utm_term: '',
+        utm_id: '',
+        gclid: '',
+        utm_cta: '',
+        target_id: '',
+        of_source: '',
     };
     return defaultUtms;
 }
@@ -93,13 +93,21 @@ function utmSourceTracking() {
     const utms = getUTMsFromParams();
     if (utms && !cookie) {
         setCookie('outfund_utm', utms);
-        return utms;
+        return Object.assign(Object.assign({}, utms), { utm_from_params: true });
+    }
+    if (!utms && cookie) {
+        return {
+            first_touch: cookie.first_touch,
+            most_recent: cookie.most_recent,
+            utm_from_params: false,
+        };
     }
     if (utms && cookie) {
         const first = cookie.first_touch;
         const utmData = {
             first_touch: first,
             most_recent: utms.most_recent,
+            utm_from_params: true,
         };
         setCookie('outfund_utm', utmData);
         return utmData;
@@ -107,6 +115,7 @@ function utmSourceTracking() {
     return {
         first_touch: defaultUtms,
         most_recent: defaultUtms,
+        utm_from_params: false,
     };
 }
 exports.utmSourceTracking = utmSourceTracking;
@@ -153,18 +162,19 @@ exports.getPageName = getPageName;
 function getPageInfo() {
     const path = document.location.pathname;
     const url = document.location.href;
-    const utms = utmSourceTracking();
     const pageName = getPageName(document.title);
-    const params = utms;
     return {
         path,
         url,
-        utms,
         pageName,
-        params,
     };
 }
 exports.getPageInfo = getPageInfo;
+function getUTMs() {
+    const utms = utmSourceTracking();
+    return Object.assign(Object.assign({ first_touch: utms.first_touch }, utms.most_recent), { utms_from_params: utms.utm_from_params });
+}
+exports.getUTMs = getUTMs;
 var CustomAttributes;
 (function (CustomAttributes) {
     CustomAttributes["elementType"] = "element-type";
@@ -278,7 +288,6 @@ function parsePageNameFromPath(pages, region) {
     if (typeof window === 'undefined')
         return '';
     let path = document.location.pathname;
-    //if region exists in path, remove it
     if (region && region.length > 0) {
         for (let i = 0; i < region.length; i++) {
             if (path.indexOf(`/${region[i]}`) > -1) {
