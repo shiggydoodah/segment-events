@@ -278,6 +278,7 @@ function trackClick(e: HTMLElement, data: TrackData) {
 }
 
 function trackTextInput(e: HTMLInputElement, data: TrackData, identify?: string) {
+  if (typeof window === 'undefined' || !window.analytics) return
   const pageData = lib.getPageInfo()
   const input = lib.getInputProperties(e)
   const inputAttributes = {

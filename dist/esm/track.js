@@ -148,6 +148,8 @@ function trackClick(e, data) {
     window.analytics.track(TrackEvents.ElementClicked, Object.assign({}, eventData));
 }
 function trackTextInput(e, data, identify) {
+    if (typeof window === 'undefined' || !window.analytics)
+        return;
     const pageData = lib.getPageInfo();
     const input = lib.getInputProperties(e);
     const inputAttributes = {
