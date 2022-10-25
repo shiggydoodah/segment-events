@@ -20,7 +20,7 @@ var TrackEvents;
 })(TrackEvents || (TrackEvents = {}));
 function page(options) {
     var _a;
-    const { regions, platform, pageNames = [] } = options;
+    const { regions, platform, pageNames = [], properties = {} } = options;
     if (typeof window === 'undefined')
         return;
     if (!window.analytics)
@@ -35,7 +35,7 @@ function page(options) {
         }
     }
     const page = hasPageName ? hasPageName : data.path;
-    (_a = window.analytics) === null || _a === void 0 ? void 0 : _a.page(page, Object.assign(Object.assign({ name: page, path: data.path, locale: locale }, utms), { platform }));
+    (_a = window.analytics) === null || _a === void 0 ? void 0 : _a.page(page, Object.assign(Object.assign(Object.assign({ name: page, path: data.path, locale: locale }, utms), { platform }), properties));
     if (utms.utms_from_params) {
         window.analytics.identify(Object.assign({ locale: locale }, utms));
     }
@@ -44,7 +44,8 @@ function pageView(pagName, region, platform, optionals) {
     if (typeof window === 'undefined' || !window.analytics)
         return;
     const utms = lib.getUTMs();
-    window.analytics.page(Object.assign(Object.assign({ name: pagName, path: window.location.pathname, locale: region }, utms), { platform }));
+    const options = optionals ? optionals : {};
+    window.analytics.page(Object.assign(Object.assign(Object.assign({ name: pagName, path: window.location.pathname, locale: region }, utms), { platform }), options));
     if (utms.utms_from_params) {
         window.analytics.identify(Object.assign(Object.assign({}, utms), { locale: region }));
     }

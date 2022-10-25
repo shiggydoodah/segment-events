@@ -68,7 +68,7 @@ interface PageOptions {
 type OptionalTrackProperties = Record<string, any>
 
 function page(options: PageOptions) {
-  const { regions, platform, pageNames = [] } = options
+  const { regions, platform, pageNames = [], properties = {} } = options
   if (typeof window === 'undefined') return
   if (!window.analytics) return
   const data = lib.getPageInfo()
@@ -88,6 +88,7 @@ function page(options: PageOptions) {
     locale: locale,
     ...utms,
     platform,
+    ...properties,
   })
   if (utms.utms_from_params) {
     window.analytics.identify({
@@ -100,12 +101,14 @@ function page(options: PageOptions) {
 function pageView(pagName: string, region: string, platform: string, optionals?: OptionalTrackProperties) {
   if (typeof window === 'undefined' || !window.analytics) return
   const utms = lib.getUTMs()
+  const options = optionals ? optionals : {}
   window.analytics.page({
     name: pagName,
     path: window.location.pathname,
     locale: region,
     ...utms,
     platform,
+    ...options,
   })
   if (utms.utms_from_params) {
     window.analytics.identify({
