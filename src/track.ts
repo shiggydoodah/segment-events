@@ -62,6 +62,7 @@ interface PageOptions {
   regions: string[] | []
   platform: string
   pageNames?: PageNames[]
+  properties?: OptionalTrackProperties
 }
 
 type OptionalTrackProperties = Record<string, any>

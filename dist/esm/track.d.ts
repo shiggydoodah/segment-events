@@ -35,6 +35,7 @@ interface PageOptions {
     regions: string[] | [];
     platform: string;
     pageNames?: PageNames[];
+    properties?: OptionalTrackProperties;
 }
 declare type OptionalTrackProperties = Record<string, any>;
 declare function page(options: PageOptions): void;
