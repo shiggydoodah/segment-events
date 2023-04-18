@@ -28,16 +28,16 @@ function getCookie(cookie_name) {
 exports.getCookie = getCookie;
 function getUTM() {
     const defaultUtms = {
-        utm_source: '',
-        utm_medium: '',
-        utm_campaign: '',
-        utm_content: '',
-        utm_term: '',
-        utm_id: '',
-        gclid: '',
-        utm_cta: '',
-        target_id: '',
-        of_source: '',
+        utm_source: false,
+        utm_medium: false,
+        utm_campaign: false,
+        utm_content: false,
+        utm_term: false,
+        utm_id: false,
+        gclid: false,
+        utm_cta: false,
+        target_id: false,
+        of_source: false,
     };
     return defaultUtms;
 }

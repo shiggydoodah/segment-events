@@ -1,4 +1,4 @@
-type AnalyticsParams = Record<string, string | null>
+type AnalyticsParams = Record<string, string | false>
 
 type PageNames = {
   name: string
@@ -29,16 +29,16 @@ function getCookie(cookie_name: string): AnalyticsParams | false {
 
 function getUTM() {
   const defaultUtms: AnalyticsParams = {
-    utm_source: '',
-    utm_medium: '',
-    utm_campaign: '',
-    utm_content: '',
-    utm_term: '',
-    utm_id: '',
-    gclid: '',
-    utm_cta: '',
-    target_id: '',
-    of_source: '',
+    utm_source: false,
+    utm_medium: false,
+    utm_campaign: false,
+    utm_content: false,
+    utm_term: false,
+    utm_id: false,
+    gclid: false,
+    utm_cta: false,
+    target_id: false,
+    of_source: false,
   }
   return defaultUtms
 }

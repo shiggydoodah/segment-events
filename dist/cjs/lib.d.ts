@@ -1,4 +1,4 @@
-declare type AnalyticsParams = Record<string, string | null>;
+declare type AnalyticsParams = Record<string, string | false>;
 declare type PageNames = {
     name: string;
     path: string;
@@ -8,7 +8,7 @@ declare function getCookie(cookie_name: string): AnalyticsParams | false;
 declare function getParams(): Record<string, any>;
 declare function getParameterByName(name: string, url?: string): string | null;
 declare function utmSourceTracking(): {
-    first_touch: string | null;
+    first_touch: string | false;
     most_recent: AnalyticsParams;
     utm_from_params: boolean;
 } | {
@@ -16,8 +16,8 @@ declare function utmSourceTracking(): {
     first_touch?: undefined;
     most_recent?: undefined;
 } | {
-    first_touch: string | null;
-    most_recent: string | null;
+    first_touch: string | false;
+    most_recent: string | false;
     utm_from_params: boolean;
 } | {
     first_touch: AnalyticsParams;
@@ -35,7 +35,7 @@ declare function getPageInfo(): {
 };
 declare function getUTMs(): {
     utms_from_params: boolean;
-    first_touch: string | AnalyticsParams | null | undefined;
+    first_touch: string | false | AnalyticsParams | undefined;
 };
 declare function useOptionalsData(options: Record<string, any> | undefined): Record<string, any>;
 declare function getSurfaceData(element: HTMLElement, surface: 'type' | 'title'): string;
