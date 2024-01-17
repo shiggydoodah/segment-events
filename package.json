@@ -1,6 +1,6 @@
 {
   "name": "@out-fund/segment-events",
-  "version": "1.4.8",
+  "version": "1.4.9",
   "description": "A simple library for track listeners & events for Segment.io",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
